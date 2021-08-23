@@ -1,117 +1,11 @@
-# Data model for the Refugee Transitions Outcomes Fund (RTOF)
+# Data Model Tools for the Refugee Transitions Outcomes Fund (RTOF)
 
-This is the source repository for the RTOF data model and includes tools for generating different outputs from the core
-specification. 
-
-## Data Model
-
-The RTOF data model defines a set of Records (facts) capturing data during the different stages of an individual's progress
-through the programme. The data model also includes a number of Categories (dimensions) that are referenced from
-the Fields within a Record.
-
-Because records are captured as part of a programme workflow, we also store the "ideal" workflow so we can indicate 
-records in the order they are likely to be captured. However, we do recognise that this may not always be the case.
-
-Finally, we define a number of validators that will be used to check data quality. These may be structural validators,
-such as a field is required or has to be in a defined set (dimension), or relational validators, such as a date should
-be after another date as events should happen sequentially. 
-
-The datamodel is described using [YAML][yaml], which, despite the website, is designed to be a 
-"human friendly" data format. The main reason for capturing the standard in YAML is that, because it is a text-based
-format, it provides a proper audit trail of changes and can be tracked in a [Version Control System][vcs] (VCS).
-
-It is also intended to be a [single source of truth][ssot] to facilitate better collaboration between the programme 
-partners and make the specification as useful and easy to follow as possible.
-
-As the RTOF programme progresses, we will use [GIT][git] to track and approve proposed changes to the data standard.
-
-### Specification Components
-
-The standard itself can be found in the [data](./data) subfolder. We purposefully did not want to start of with an 
-existing data Schema format, such as XML schemas as they are tightly coupled to the transfer format. For this project, 
-the data model defines the conceptual data model. However, the specification aims to capture details of both conceptual
-and logical data models, as well as data interchange formats. 
-
-#### Records
-
-The [records](./data/records) folder contains definition for all the specification records (facts) as well as details
-of synthetic data parameters and validation rules that apply to each field within the record.
-
-An example record contains a description and a set of fields for that record. The fields have an ID (the key), a name, 
-type, description, comments,
-
-```yaml
-
-description: The description explains what this record captures
-
-fields:
-
-  field_name:
-    name: <Formal Name>
-    type: <string|int|Categorical|List>
-    description: <Explanation of how to use the record>
-    comments: <Development comments - such as issues raised>
-    primary_key: <boolean>
-    foreign_keys:
-    - record: <record id>
-      field:  <field id>>
-    validation:
-      <validator>: <args>
-      
-  [...]
-
-```
-
-#### Categories
-
-The [categories](./data/categories) folder holds the dimensions as referenced by `Categorical` and `List` datatypes. 
-A Dimension object has a value and description, where the value is what would normally be expected to be transferred 
-in an interchange format. The description is optional, and is not provided where the value is descriptive enough. 
-
-The yaml files can either hold a list of string values, e.g. 
-
-```yaml
-- Value 1
-- Value 2
-```
-or a list of objects:
-
-```yaml
-- value: Value 1
-  description: A description of value 1
-- value: Value 2
-  description: A description of value 2
-```
-
-#### Workflow
-
-The [workflow file](./data/workflow.yml) describes the order in which the records are expected to be captured and is
-mostly used to provide a useful ordering in documentation. 
-
-The format of this file is still in development. 
-
-#### Validators
-
-Similarly to the workflow file, the [validators file](./data/validators.yml) is a single file defining the validation
-rules that are applied to fields when the data is received. It is also intended that this file, combined with the other
-definitions, will be used for generating transfer format schemas, such as [JSON Schema][jsc] or [CSV Schema][csc].
-
-The format of this file is still in development. 
-
-## Output Formats
-
-Since the specification is intended to be easy to maintain, it is not necessarily that easy to process for humans, and 
-most case management and data management systems aren't YAML aware, we provide a set of tools to convert the YAML into
-more conventional formats. 
-
-The main place to find documentation relating to this specification is 
-[sfdl.org.uk/RTOF-specification](https://sfdl.org.uk/RTOF-specification/). The website and associated documentation
-is generated using a set of Python modules as described below. The intention is that these will be split off into 
-a separate project.
+This is the source repository for the RTOF data model tools for generating different outputs from the core
+specification.
 
 ## Python Documentation Generators
 
-The documentation generator uses [Poetry][poetry] for dependency management. Make sure you have poetry installed, 
+The documentation generator uses [Poetry][poetry] for dependency management. Make sure you have poetry installed,
 then install the project dependencies:
 
 ```
@@ -121,7 +15,7 @@ poetry install
 Once installed, you can either run the generator from the command line by typing:
 
 ```
-poetry run python main.py 
+poetry run python main.py
 ```
 
 or you can launch VS Code with:
@@ -141,33 +35,33 @@ poetry run flake8
 
 ### ERD output
 
-The [Entity Relationship Diagram (ERD)][erd] generator ([erd.py](./rtofdata/erd.py)) uses [Graphviz][graphviz] 
+The [Entity Relationship Diagram (ERD)][erd] generator ([erd.py](./rtofdata/erd.py)) uses [Graphviz][graphviz]
 to produce an ERD showing the relationships between the records.
 
 
 ### Word output
 
-The [word output module](./rtofdata/word.py) uses [docxtpl][docxtpl] to provide a Word version of the 
+The [word output module](./rtofdata/word.py) uses [docxtpl][docxtpl] to provide a Word version of the
 specification, including the ERD.
 
 ### Excel output
 
-Whilst the Word documentation is intended for human consumption, the [excel version](./rtofdata/excel.py) 
+Whilst the Word documentation is intended for human consumption, the [excel version](./rtofdata/excel.py)
 is better for importing
-categories into a CMS. Simply using [openpyxl][https://openpyxl.readthedocs.io/en/stable/] to create tables for 
+categories into a CMS. Simply using [openpyxl][https://openpyxl.readthedocs.io/en/stable/] to create tables for
 import into other data systems.
 
 ### Jekyll output
 
-Finally, the [Jekyll][jekyll] [output module](./rtofdata/jekyll.py) generates a set of Jekyll pages 
+Finally, the [Jekyll][jekyll] [output module](./rtofdata/jekyll.py) generates a set of Jekyll pages
 to produce the website. The Jekyll configuration can be found in [website](./website).
 
 ## Continuous Deployment
 
-The whole specification uses [GitHub Actions][gha] to build and deploy the specification upon every push to the 
-code repository. The [workflow file](./.github/workflows/main.yml) runs the python scripts to generate the outputs, 
-uploads them to the Social Finance specification webhook, and then pushes the generated Jekyll website to a 
-second [GitHub repostiory](https://github.com/SocialFinanceDigitalLabs/RTOF-specification) that is used to host
+The whole specification uses [GitHub Actions][gha] to build and deploy the specification upon every push to the
+code repository. The [workflow file](./.github/workflows/main.yml) runs the python scripts to generate the outputs,
+uploads them to the Social Finance specification webhook, and then pushes the generated Jekyll website to a
+second [GitHub repository](https://github.com/SocialFinanceDigitalLabs/RTOF-specification) that is used to host
 the [GitHub pages](ghp) specification [site](https://sfdl.org.uk/RTOF-specification/).
 
 [poetry]: https://python-poetry.org/
@@ -183,4 +77,3 @@ the [GitHub pages](ghp) specification [site](https://sfdl.org.uk/RTOF-specificat
 [jekyll]: https://jekyllrb.com/
 [gha]: https://github.com/features/actions
 [ghp]: https://pages.github.com/
-
