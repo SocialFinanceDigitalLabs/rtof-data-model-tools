@@ -163,9 +163,10 @@ def parse_dimensions():
     return all_categories
 
 
-def parse_records(datatypes, categories):
+def parse_records(datatypes, categories, validators):
     categories = {c.id: c for c in categories}
     datatypes = {c.id: c for c in datatypes}
+    validators = {c.id: c for c in validators}
 
     record_file_list = (data_dir / "records").glob("*.yml")
 
@@ -181,6 +182,8 @@ def parse_records(datatypes, categories):
         for field_id, values in field_dict.items():
             try:
                 values['type'] = datatypes[values['type']]
+                if "validation" in values:
+                    values['validation'] = [validators[v] for v in values['validation']]
                 field = Field(id=field_id, **values)
                 field_list.append(field)
                 if "dimension" in field.validation:
@@ -247,10 +250,10 @@ def parse_datatypes():
 
 def parse_specification():
     datatypes = parse_datatypes()
-    validators = parse_validators()
     categories = parse_dimensions()
+    validators = parse_validators()
 
-    records = parse_records(datatypes, categories)
+    records = parse_records(datatypes, categories, validators)
     flows = parse_flow(records)
 
     return Specification(records=records, dimensions=categories, flows=flows, validators=validators)
