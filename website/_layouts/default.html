@@ -4,49 +4,51 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,maximum-scale=2">
-    <link rel="stylesheet" type="text/css" media="screen" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
-
-{% seo %}
-    {% include head-custom.html %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"  media="screen,projection"/>
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}"> -->
+    {% seo %}
   </head>
 
   <body>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          {% if site.github.is_project_page %}
-            <a id="forkme_banner" href="{{ site.github.repository_url }}">View on GitHub</a>
-          {% endif %}
+    <nav role="navigation" class="black">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="{{ '/' | relative_url }}" class="brand-logo">RTOF Data Schema</a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="{{ '/' | relative_url }}">Overview</a></li>
+          <li><a href="{{ '/records' | relative_url }}">Records</a></li>
+          <li><a href="{{ '/dimensions' | relative_url }}">Dimensions</a></li>
+          <li><a href="#">Data Types</a></li>
+        </ul>
 
-          <h1 id="project_title"><a href="{{ '/' | relative_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
-          <h2 id="project_tagline">{{ site.description | default: site.github.project_tagline }}</h2>
-
-          {% if site.show_downloads %}
-            <section id="downloads">
-              <a class="zip_download_link" href="{{ site.github.zip_url }}">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="{{ site.github.tar_url }}">Download this project as a tar.gz file</a>
-            </section>
-          {% endif %}
-        </header>
-    </div>
+        <ul id="nav-mobile" class="sidenav">
+          <li><a href="{{ '/' | relative_url }}">Overview</a></li>
+          <li><a href="{{ '/records' | relative_url }}">Records</a></li>
+          <li><a href="{{ '/dimensions' | relative_url }}">Dimensions</a></li>
+          <li><a href="#">Data Types</a></li>
+        </ul>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      </div>
+    </nav>
 
     <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+    <div class="container">
+      <div class="section">
         {{ content }}
-      </section>
+      </div>
     </div>
 
     <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
+    <footer class="page-footer black">
         {% if site.github.is_project_page %}
         <p class="copyright">{{ site.title | default: site.github.repository_name }} maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
         {% endif %}
         <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
+    </footer>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript" src="{{ '/assets/js/index.js?v=' | append: site.github.build_revision | relative_url }}"></script>
   </body>
 </html>

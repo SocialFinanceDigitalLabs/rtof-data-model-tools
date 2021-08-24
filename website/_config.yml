@@ -22,9 +22,9 @@ title: RTOF Data Specification
 email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
   This webpage hosts details regarding the RTOF data collection.
-  All information found on this site reflects the latest version and decsions. 
-  The data specification outlines all data fields to be collected, and where appropriate, the options for categorical or list data fields. 
-  The status of some data fields have not been confirmed with all stakeholders and are currently blocked, work in progress or pending consideration, the status of each field is stored in each record description. 
+  All information found on this site reflects the latest version and decsions.
+  The data specification outlines all data fields to be collected, and where appropriate, the options for categorical or list data fields.
+  The status of some data fields have not been confirmed with all stakeholders and are currently blocked, work in progress or pending consideration, the status of each field is stored in each record description.
 url: https://sfdl.org.uk
 baseurl: /RTOF-specification
 
@@ -38,9 +38,9 @@ collections:
 
 
 # Build settings
-theme: jekyll-theme-slate
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
 
 # Exclude from processing.
 # The following items will not be processed, by default.
