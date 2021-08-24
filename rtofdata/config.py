@@ -3,10 +3,14 @@ import os
 
 root = Path(__file__).parent / '..'
 
-data_root = os.getenv("DATA_ROOT",
-                      Path(__file__).parent / '../../rtof-data-model')
+data_root = os.getenv("DATA_ROOT")
+if data_root:
+    data_root = Path(data_root)
+else:
+    data_root = Path(__file__).parent / '../../rtof-data-model'
 
 assets_dir = data_root / 'assets'
+
 data_dir = data_root / 'data'
 
 template_dir = root / "templates"
