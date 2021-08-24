@@ -35,8 +35,9 @@ def add_links_to_chart():
     for sg in sub_graphs:
         root_graph.remove(sg)
 
+        filename = f"/records/{sg.attrib['id']}.html"
         link = ET.Element("a")
-        link.attrib['href'] = f"./{sg.attrib['id']}.html"
+        link.attrib['href'] = "{{ '" + filename + "' | relative_url }}"
         root_graph.append(link)
         link.append(sg)
 
