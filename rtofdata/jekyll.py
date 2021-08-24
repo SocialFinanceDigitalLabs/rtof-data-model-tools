@@ -40,8 +40,8 @@ def add_links_to_chart():
         root_graph.append(link)
         link.append(sg)
 
-    (jekyll_dir / '_includes').mkdir(parents=True, exist_ok=True)
-    with open(jekyll_dir / '_includes/record-relationships.svg', 'wb') as f:
+    (jekyll_dir / '_includes/dynamic').mkdir(parents=True, exist_ok=True)
+    with open(jekyll_dir / '_includes/dynamic/record-relationships.svg', 'wb') as f:
         tree.write(f, encoding='utf-8')
 
 

@@ -141,6 +141,6 @@ cython_debug/
 Graphviz
 
 website/_data
-website/_includes
+website/_includes/dynamic
 website/collections/_*
 website/assets/spec

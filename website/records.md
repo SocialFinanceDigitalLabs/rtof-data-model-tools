@@ -10,4 +10,4 @@ Records capture information about a specific step in the programme flow and cont
   * [{{r.id}}]({{ '/records/' | append: r.id | relative_url  }})
 {% endfor %}
 
-{% include record-relationships.svg %}
+{% include dynamic/record-relationships.svg %}
