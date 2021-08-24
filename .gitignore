@@ -144,3 +144,4 @@ website/_data
 website/_includes/dynamic
 website/collections/_*
 website/assets/spec
+website/assets/src

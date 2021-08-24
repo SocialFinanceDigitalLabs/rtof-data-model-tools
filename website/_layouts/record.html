@@ -23,7 +23,7 @@ layout: default
   <tr>
     <td><a href="#{{ field.id }}">{{ field.id }} {% if field.primary_key %} <b>[PK]</b>{% endif %}</a></td>
     <td>{{ field.name }}</td>
-    <td>{{ field.type }}</td>
+    <td>{{ field.type.id }}</td>
     <td>{% if field.dimensions %}
         {% for d in site.dimensions %}
           {% if d.dimensions.id == field.dimensions.id %}
@@ -45,7 +45,7 @@ layout: default
 <p> Latest comments: {{field.latest_comments}}</p>
 
 <table>
-  <tr><th>Type</th><td>{{ field.type }}</td></tr>
+  <tr><th>Type</th><td>{{ field.type.id }}</td></tr>
 {% if field.primary_key %}
   <tr><th>Primary Key</th><td>True</td></tr>
 {% endif %}

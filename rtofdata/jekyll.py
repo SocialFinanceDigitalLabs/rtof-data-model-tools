@@ -4,16 +4,19 @@ import xml.etree.ElementTree as ET
 
 import yaml
 
-from rtofdata.config import jekyll_dir, output_dir
+from rtofdata.config import jekyll_dir, output_dir, assets_dir as src_assets
 from rtofdata.spec_parser import Specification
 
 assets_dir = jekyll_dir / "assets/spec/"
 
+
 dict_factory=lambda x: {k: v for (k, v) in x if v is not None}
+
 
 def write_jekyll_specification(spec: Specification):
     write_records(spec)
     write_dimensions(spec)
+    write_datatypes(spec)
     copy_assets()
     add_links_to_chart()
 
@@ -53,7 +56,14 @@ def copy_assets():
         pass
 
     shutil.copytree(output_dir, assets_dir)
+
     (assets_dir / ".gitignore").unlink(missing_ok=True)
+
+    try:
+        shutil.rmtree(jekyll_dir / "assets/src")
+    except FileNotFoundError:
+        pass
+    shutil.copytree(src_assets, jekyll_dir / "assets/src")
 
 
 def write_records(spec: Specification):
@@ -88,4 +98,12 @@ def write_dimensions(spec: Specification):
     with open(dir / "dimensions.yml", "wt") as file:
         dims = [asdict(d, dict_factory=dict_factory) for d in spec.dimensions]
         dims.sort(key=lambda d: d['id'])
+        yaml.dump(dims, file)
+
+
+def write_datatypes(spec: Specification):
+    dir = jekyll_dir / "_data"
+    dir.mkdir(parents=True, exist_ok=True)
+    with open(dir / "datatypes.yml", "wt") as file:
+        dims = [asdict(d, dict_factory=dict_factory) for d in spec.datatypes]
         yaml.dump(dims, file)

@@ -113,6 +113,7 @@ class Specification:
     dimensions: List[DimensionList]
     flows: List[Workflow]
     validators: List[ValidationRule]
+    datatypes: List[Datatype]
 
     def record_by_id(self, id):
         return [r for r in self.records if r.id == id][0]
@@ -256,4 +257,4 @@ def parse_specification():
     records = parse_records(datatypes, categories, validators)
     flows = parse_flow(records)
 
-    return Specification(records=records, dimensions=categories, flows=flows, validators=validators)
+    return Specification(records=records, dimensions=categories, flows=flows, validators=validators, datatypes=datatypes)
