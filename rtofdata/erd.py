@@ -3,13 +3,13 @@ from pathlib import Path
 import graphviz
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from rtofdata.config import output_dir, assets_dir
+from rtofdata.config import output_dir, template_dir
 from rtofdata.spec_parser import Specification
 
 
 def create_erd(spec: Specification):
     env = Environment(
-        loader=FileSystemLoader(assets_dir),
+        loader=FileSystemLoader(template_dir),
         autoescape=select_autoescape()
     )
     relationships = []

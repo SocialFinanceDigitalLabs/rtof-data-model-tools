@@ -6,7 +6,7 @@ from docxtpl import DocxTemplate, InlineImage
 
 import git
 
-from rtofdata.config import assets_dir, output_dir
+from rtofdata.config import assets_dir, output_dir, template_dir
 from rtofdata.spec_parser import Specification
 
 
@@ -52,7 +52,7 @@ def write_word_specification(spec: Specification):
     Read more about docx here: https://python-docx.readthedocs.io/en/latest/
     """
 
-    tpl = DocxTemplate(assets_dir / "template.docx")
+    tpl = DocxTemplate(template_dir / "template.docx")
     context = create_context(spec)
     context['milestones_image'] = InlineImage(tpl, image_descriptor=str(assets_dir / 'submission_and_collection.png'),
                                               width=Cm(16))
@@ -62,10 +62,7 @@ def write_word_specification(spec: Specification):
     context['erd_image'] = InlineImage(tpl, image_descriptor=str(output_dir / 'record-relationships.png'),
                                               width=Cm(16))
 
-    
+
 
     tpl.render(context)
     tpl.save(output_dir / "specification.docx")
-
-
-        
