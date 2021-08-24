@@ -9,6 +9,15 @@ from rtofdata.config import data_dir
 
 
 @dataclass
+class Datatype:
+    id: str
+    description: str = None
+
+    def __str__(self):
+        return self.id
+
+
+@dataclass
 class Dimension:
     value: str
     description: str = None
@@ -28,7 +37,7 @@ class DimensionList:
 class Field:
     id: str
     name: str
-    type: str
+    type: Datatype
     description: str = None
     comments: str = None
     primary_key: bool = False
@@ -154,8 +163,9 @@ def parse_dimensions():
     return all_categories
 
 
-def parse_records(categories):
+def parse_records(datatypes, categories):
     categories = {c.id: c for c in categories}
+    datatypes = {c.id: c for c in datatypes}
 
     record_file_list = (data_dir / "records").glob("*.yml")
 
@@ -170,6 +180,7 @@ def parse_records(categories):
         data['fields'] = field_list = []
         for field_id, values in field_dict.items():
             try:
+                values['type'] = datatypes[values['type']]
                 field = Field(id=field_id, **values)
                 field_list.append(field)
                 if "dimension" in field.validation:
@@ -224,10 +235,22 @@ def parse_validators():
     return validators
 
 
+def parse_datatypes():
+    with open(data_dir / "datatypes.yml", 'rt') as file:
+        data = yaml.safe_load(file)
+
+    datatypes = []
+    for key, value in data.items():
+        datatypes.append(Datatype(id=key, **value))
+    return datatypes
+
+
 def parse_specification():
+    datatypes = parse_datatypes()
     validators = parse_validators()
     categories = parse_dimensions()
-    records = parse_records(categories)
+
+    records = parse_records(datatypes, categories)
     flows = parse_flow(records)
 
     return Specification(records=records, dimensions=categories, flows=flows, validators=validators)

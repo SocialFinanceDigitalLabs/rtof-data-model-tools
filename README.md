@@ -1,7 +1,7 @@
 # Data Model Tools for the Refugee Transitions Outcomes Fund (RTOF)
 
-This is the source repository for the RTOF data model tools for generating different outputs from the core
-specification.
+This is the source repository for the RTOF data model tools for generating different outputs from the 
+[core specification][rtof-spec].
 
 ## Python Documentation Generators
 
@@ -64,6 +64,7 @@ uploads them to the Social Finance specification webhook, and then pushes the ge
 second [GitHub repository](https://github.com/SocialFinanceDigitalLabs/RTOF-specification) that is used to host
 the [GitHub pages](ghp) specification [site](https://sfdl.org.uk/RTOF-specification/).
 
+[rtof-spec]: https://github.com/SocialFinanceDigitalLabs/rtof-data-model
 [poetry]: https://python-poetry.org/
 [yaml]: https://yaml.org/
 [vcs]: https://en.wikipedia.org/wiki/Version_control
@@ -77,3 +78,5 @@ the [GitHub pages](ghp) specification [site](https://sfdl.org.uk/RTOF-specificat
 [jekyll]: https://jekyllrb.com/
 [gha]: https://github.com/features/actions
 [ghp]: https://pages.github.com/
+
+

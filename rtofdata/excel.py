@@ -20,7 +20,7 @@ def write_records(spec: Specification):
         ws.append((f"{r.description}", ))
         ws.append([])
 
-        data = [[f.id, f.name, f.primary_key, f.type, f.dimensions.id if f.dimensions else ""] for f in r.fields]
+        data = [[f.id, f.name, f.primary_key, f.type.id, f.dimensions.id if f.dimensions else ""] for f in r.fields]
         if len(data) == 0:
             data = [["No Data Available", ""]]
 
