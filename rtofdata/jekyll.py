@@ -9,6 +9,7 @@ from rtofdata.spec_parser import Specification
 
 assets_dir = jekyll_dir / "assets/spec/"
 
+dict_factory=lambda x: {k: v for (k, v) in x if v is not None}
 
 def write_jekyll_specification(spec: Specification):
     write_records(spec)
@@ -64,20 +65,11 @@ def write_records(spec: Specification):
             yaml.dump(dict(record=asdict(r), layout="record"), file)
             print("---", file=file)
 
-    with open(dir / "index.md", "wt") as file:
-        records = [f.record for f in spec.records_by_flow]
-
-        print("""---
-layout: default
----        
-        """, file=file)
-        for r in records:
-            print(f" * [{r.id}]({r.id}.html)", file=file)
-
-        print("""
-
-{% include record-relationships.svg %}
-        """, file=file)
+    dir = jekyll_dir / "_data"
+    dir.mkdir(parents=True, exist_ok=True)
+    with open(dir / "records.yml", "wt") as file:
+        records = [asdict(f.record, dict_factory=dict_factory) for f in spec.records_by_flow]
+        yaml.dump(records, file)
 
 
 def write_dimensions(spec: Specification):
@@ -90,12 +82,9 @@ def write_dimensions(spec: Specification):
             yaml.dump(dict(dimensions=asdict(d), layout="dimension"), file)
             print("---", file=file)
 
-    dims = [d for d in spec.dimensions]
-    dims.sort(key=lambda d: d.id)
-    with open(dir / "index.md", "wt") as file:
-        print("""---
-layout: default
----        
-        """, file=file)
-        for d in dims:
-            print(f" * [{d.id}]({d.id}.html)", file=file)
+    dir = jekyll_dir / "_data"
+    dir.mkdir(parents=True, exist_ok=True)
+    with open(dir / "dimensions.yml", "wt") as file:
+        dims = [asdict(d, dict_factory=dict_factory) for d in spec.dimensions]
+        dims.sort(key=lambda d: d['id'])
+        yaml.dump(dims, file)
