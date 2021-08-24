@@ -17,7 +17,8 @@ def create_person_data(spec, num_records):
     person_data = {}
     for i in range(0, num_records):
         person_data[i] = {}
-        person_data[i]['NiNo'] = fake.bothify('?? ######')
+        person_data[i]['ni_number'] = fake.bothify('?? ######')
+        person_data[i]['temp_ni_number'] = fake.bothify('?? ######')
         person_data[i]['date_of_birth'] = _date_between(spec.field_by_id('person', 'date_of_birth'))
         person_data[i]['gender'] = fake.random.choice(spec.dimension_by_id('gender').values)
         person_data[i]['dispersal_area'] = fake.postcode()
@@ -29,8 +30,7 @@ def create_baseline_data(spec, num_records):
     baseline_data ={}
     for i in range(0, num_records):
         baseline_data[i] = {}
-        baseline_data[i]['ni_number'] = fake.bothify('?? ######')
-        baseline_data[i]['temp_ni_number'] = fake.bothify('?? ######')
+        baseline_data[i]['unique_id'] = fake.bothify('?? ######')
         baseline_data[i]['Nationality'] = fake.random.choice(spec.dimension_by_id('nationality').values)
         baseline_data[i]['language_level_on_entry'] = fake.random.choice(spec.dimension_by_id('language_level_on_entry').values)
         baseline_data[i]['gender_follow_up'] = fake.random.choice(spec.dimension_by_id('transgender').values)

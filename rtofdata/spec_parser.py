@@ -36,6 +36,8 @@ class Field:
     validation: dict = None
     dimensions: DimensionList = None
     sample_generator: dict = None
+    status: str = None
+    latest_comments: dict = None
 
 
 @dataclass

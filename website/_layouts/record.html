@@ -15,6 +15,7 @@ layout: default
     <th>Name</th>
     <th>Type</th>
     <th>Dimension</th>
+    <th>Decision status</th>
   <tr>
 </thead>
 <tbody>
@@ -30,6 +31,7 @@ layout: default
           {% endif %}
         {% endfor %}
       {% endif %}</td>
+    <td>{{ field.status }}</td>
   </tr>
 {% endfor %}
 </tbody>
@@ -39,6 +41,8 @@ layout: default
 <section id="{{field.id}}">
 <h2 >{{field.id}}: {{field.name}}</h2>
 <p>{{ field.description }}</p>
+<p> Status: {{field.status }}</p>
+<p> Latest comments: {{field.latest_comments}}</p>
 
 <table>
   <tr><th>Type</th><td>{{ field.type }}</td></tr>
