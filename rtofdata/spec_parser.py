@@ -183,12 +183,12 @@ def parse_records(datatypes, categories, validators):
         for field_id, values in field_dict.items():
             try:
                 values['type'] = datatypes[values['type']]
-                if "validation" in values:
-                    values['validation'] = [validators[v] for v in values['validation']]
                 field = Field(id=field_id, **values)
+                if "validation" in values:
+                    field.validation = [validators[v] for v in values['validation']]
+                if "dimension" in values['validation']:
+                    field.dimensions = categories[values['validation']['dimension']]
                 field_list.append(field)
-                if "dimension" in field.validation:
-                    field.dimensions = categories[field.validation['dimension']]
 
             except (TypeError, KeyError):
                 record_errors.append(dict(

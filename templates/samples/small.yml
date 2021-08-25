@@ -1,0 +1,34 @@
+context:
+  seed: 1
+  start: 2021-10-01
+  end: 2022-10-01
+
+records:
+
+  person:
+    num: 100
+    probability: 1.0
+    records:
+
+      housing_entry:
+        num: 1
+        probability: .25
+        context:
+          start: +30
+          end: +150
+        records:
+
+          housing_sustain:
+            num: 1
+            probability: .25
+            context:
+              start: +60
+              end: +365
+
+      baseline:
+        num: 1
+        probability: .75
+
+      integration_plan:
+        num: 1
+        probability: .75
