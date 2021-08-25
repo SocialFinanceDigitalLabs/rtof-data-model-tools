@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"  media="screen,projection"/>
-    <!-- <link rel="stylesheet" type="text/css" media="screen" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}"> -->
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ '/assets/css/site.css?v=' | append: site.github.build_revision | relative_url }}">
     {% seo %}
   </head>
 
@@ -36,10 +36,20 @@
 
     <!-- FOOTER  -->
     <footer class="page-footer black">
-        {% if site.github.is_project_page %}
-        <p class="copyright">{{ site.title | default: site.github.repository_name }} maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
-        {% endif %}
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      <div class="container">
+        <div class="row">
+          <p>
+            {{ site.title | default: site.github.repository_name }} maintained by
+            <a href="https://www.socialfinance.org.uk/">Social Finance</a>.
+            Published with <a href="https://pages.github.com">GitHub Pages</a>.
+            <span class="right">
+              <a href="https://github.com/SocialFinanceDigitalLabs/rtof-data-model/commit/{{site.data.git.git_hexsha}}">{{site.data.git.git_hexsha | truncate: 7, ""}}</a>
+              - <a href="https://github.com/{{site.data.git.git_committer_name}}">{{site.data.git.git_committer_name}}</a>
+              - {{site.data.git.git_committed_date}}
+            </span>
+        </p>
+        </div>
+      </div>
     </footer>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>

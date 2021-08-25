@@ -6,6 +6,7 @@ import yaml
 
 from rtofdata.config import jekyll_dir, output_dir, assets_dir as src_assets
 from rtofdata.spec_parser import Specification
+from rtofdata.word import get_git_data
 
 assets_dir = jekyll_dir / "assets/spec/"
 
@@ -19,6 +20,7 @@ def write_jekyll_specification(spec: Specification):
     write_datatypes(spec)
     copy_assets()
     add_links_to_chart()
+    write_gitinfo()
 
 
 def add_links_to_chart():
@@ -107,3 +109,9 @@ def write_datatypes(spec: Specification):
     with open(dir / "datatypes.yml", "wt") as file:
         dims = [asdict(d, dict_factory=dict_factory) for d in spec.datatypes]
         yaml.dump(dims, file)
+
+def write_gitinfo():
+    dir = jekyll_dir / "_data"
+    dir.mkdir(parents=True, exist_ok=True)
+    with open(dir / "git.yml", "wt") as file:
+        yaml.dump(get_git_data(), file)
