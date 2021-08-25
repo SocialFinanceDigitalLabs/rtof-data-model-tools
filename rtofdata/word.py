@@ -1,17 +1,17 @@
 from dataclasses import asdict
 from datetime import datetime
-
+import time
 from docx.shared import Cm
 from docxtpl import DocxTemplate, InlineImage
 
 import git
 
-from rtofdata.config import assets_dir, output_dir, template_dir
+from rtofdata.config import assets_dir, data_dir, output_dir, template_dir
 from rtofdata.spec_parser import Specification
 
 
-def get_git_version():
-    repo = git.Repo(search_parent_directories=True)
+def get_git_data():
+    repo = git.Repo(data_dir, search_parent_directories=True)
     git_version = repo.head.object.hexsha[:7]
 
     tagmap = {}
@@ -22,15 +22,26 @@ def get_git_version():
     if git_tag:
         git_version = str(git_tag[0])
 
+    git_dirty = False
     if repo.is_dirty() or len(repo.untracked_files) > 0:
+        git_dirty = True
         git_version = f"{git_version} (changes pending)"
 
-    return git_version
+    return {
+        "git_version": git_version,
+        "git_dirty": git_dirty,
+        "git_hexsha": repo.head.object.hexsha,
+        "git_msg": repo.head.object.message,
+        "git_committed_date": time.strftime("%Y-%m-%d %H:%M %Z", time.gmtime(repo.head.object.committed_date)),
+        "git_committer_name": repo.head.object.committer.name,
+        "git_committer_email": repo.head.object.committer.email,
+        "git_tags": [str(t) for t in git_tag] if git_tag else [],
+    }
 
 
 def create_context(spec: Specification):
     context = {
-        "git_version": get_git_version(),
+        **get_git_data(),
         "generation_time": f"{datetime.now():%d %B %Y}",
         "spec": spec,
         "record_list": spec.records,
