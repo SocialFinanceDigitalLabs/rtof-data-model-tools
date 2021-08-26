@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-{% assign dimension = site.data.dimensions | find: "id", page.dimension_id %}
+{% assign dimension = site.data.dimensions | where: "id", page.dimension_id | first %}
 
 <h1>{{ dimension.id | upcase }} Dimension</h1>
 
