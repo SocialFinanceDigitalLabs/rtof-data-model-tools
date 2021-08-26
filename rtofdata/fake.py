@@ -49,13 +49,14 @@ def generate_record(spec, context, record_name, config, faker, ix):
         field_config = config.get("fields", {}).get(f.id, {})
         if f.foreign_keys:
             gen = lambda *args, **kwargs: context['parent_id']
-            args = {}
         elif "method" in field_config:
             gen = getattr(fake_generator, field_config['method'])
-            args = field_config.get('args', {})
         else:
             gen = getattr(fake_generator, f.type.id)
-            args = {}
+
+        args = {}
+        if "args" in field_config:
+            args = field_config.get('args', {})
 
         record[f.id] = gen(faker, context, field=f, **args)
         if f.primary_key:

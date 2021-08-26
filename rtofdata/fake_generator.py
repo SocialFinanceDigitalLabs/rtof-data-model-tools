@@ -37,7 +37,15 @@ def get_date_or_delta(date_string, context_date):
 
 
 def unique_identifier(faker: Faker, context, **kwargs):
-    return faker.unique.bothify(text="????-????-????-####", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    return faker.unique.bothify(text="??-##", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+
+def ni_number(faker: Faker, context, **kwargs):
+    return faker.unique.bothify(text="??######", letters="ABCEGHJKLMNPRSTWXYZ") + faker.random.choice("ABCD")
+
+
+def temp_ni_number(faker: Faker, context, **kwargs):
+    return faker.unique.bothify(text="##T#####")
 
 
 def year(faker: Faker, context, **kwargs):
@@ -75,9 +83,11 @@ def date_between(faker: Faker, context, start_date, end_date, format=None, conve
     return date_value
 
 
-def categorical(faker: Faker, context, field, **kwargs):
-    if field.dimensions.values:
-        return faker.random.choice(field.dimensions.values)
+def categorical(faker: Faker, context, field, dimensions=None, **kwargs):
+    if not dimensions:
+        dimensions = field.dimensions.values
+    if dimensions:
+        return faker.random.choice(dimensions)
     else:
         return None
 
