@@ -171,6 +171,7 @@ def _get_validator_description(name, config):
     else:
         return f"{name}({config})"
 
+
 def parse_records(datatypes, categories, validators):
     categories = {c.id: c for c in categories}
     datatypes = {c.id: c for c in datatypes}
@@ -201,7 +202,6 @@ def parse_records(datatypes, categories, validators):
                         }
                         for k, v in values['validation'].items()
                     ]
-                    print(values['validation'], field.validation)
                 else:
                     field.validation = []
                 if "dimension" in values.get('validation', {}):

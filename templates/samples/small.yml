@@ -44,6 +44,16 @@ records:
             args:
               min: 12
               max: 25
+          date_arrived_in_uk:
+            method: date_between
+            args:
+              start_date: -5y
+              end_date: -2y
+          date_asylum_status_granted:
+            method: date_between
+            args:
+              start_date: -18m
+              end_date: -6m
 
       housing_entry:
         probability: .5
