@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import yaml
 
 from rtofdata.config import jekyll_dir, output_dir, assets_dir as src_assets
+from rtofdata.fake import create_all_data
 from rtofdata.spec_parser import Specification
 from rtofdata.word import get_git_data
 
@@ -18,6 +19,7 @@ def write_jekyll_specification(spec: Specification):
     write_records(spec)
     write_dimensions(spec)
     write_datatypes(spec)
+    write_sample_data(spec)
     copy_assets()
     add_links_to_chart()
     write_gitinfo()
@@ -75,7 +77,7 @@ def write_records(spec: Specification):
     for r in spec.records:
         with open(dir / f"{r.id}.md", "wt") as file:
             print("---", file=file)
-            yaml.dump(dict(record=asdict(r), layout="record"), file)
+            yaml.dump(dict(record=dict(id=r.id), layout="record"), file)
             print("---", file=file)
 
     dir = jekyll_dir / "_data"
@@ -110,8 +112,22 @@ def write_datatypes(spec: Specification):
         dims = [asdict(d, dict_factory=dict_factory) for d in spec.datatypes]
         yaml.dump(dims, file)
 
+
 def write_gitinfo():
     dir = jekyll_dir / "_data"
     dir.mkdir(parents=True, exist_ok=True)
     with open(dir / "git.yml", "wt") as file:
         yaml.dump(get_git_data(), file)
+
+
+def write_sample_data(spec: Specification):
+    dir = jekyll_dir / "_data"
+    dir.mkdir(parents=True, exist_ok=True)
+
+    sample_data = create_all_data()
+    output_data = {}
+    for table_name, items in sample_data.items():
+        output_data[table_name] = [i for i in items.values()]
+
+    with open(dir / "sample_data.yml", "wt") as file:
+        yaml.dump(output_data, file)

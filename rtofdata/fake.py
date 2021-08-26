@@ -64,7 +64,7 @@ def generate_record(spec, context, record_name, config, faker, ix):
     return id[0] if len(id) < 2 else tuple(id), record
 
 
-def create_all_data(config_file):
+def create_all_data(config_file=None):
     spec = parse_specification()
 
     if config_file is None:

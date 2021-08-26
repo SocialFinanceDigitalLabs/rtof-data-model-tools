@@ -1,11 +1,12 @@
 ---
 layout: default
 ---
+{% assign record = site.data.records | find: "id", page.record.id %}
 
-<h1>{{ page.record.id | upcase }} Record</h1>
+<h1>{{ record.id | upcase }} Record</h1>
 
 <p>
-{{ page.record.description }}
+{{ record.description }}
 </p>
 
 <table>
@@ -19,7 +20,7 @@ layout: default
   <tr>
 </thead>
 <tbody>
-{% for field in page.record.fields %}
+{% for field in record.fields %}
   <tr>
     <td><a href="#{{ field.id }}">{{ field.id }} {% if field.primary_key %} <b>[PK]</b>{% endif %}</a></td>
     <td>{{ field.name }}</td>
@@ -37,9 +38,34 @@ layout: default
 </tbody>
 </table>
 
-{% for field in page.record.fields %}
+<h2>Record Samples</h2>
+<table>
+<thead>
+  <tr>
+    {% for field in record.fields %}
+      <th>{{field.id}}</th>
+    {% endfor %}
+  <tr>
+</thead>
+<tbody>
+{% for row in site.data.sample_data[record.id] %}
+  <tr>
+    {% for field in record.fields %}
+      <td>{{row[field.id]}}</td>
+    {% endfor %}
+  </tr>
+{% endfor %}
+</tbody>
+</table>
+
+
+
+
+<h2>Fields</h2>
+
+{% for field in record.fields %}
 <section id="{{field.id}}">
-<h2 >{{field.id}}: {{field.name}}</h2>
+<h3>{{field.id}}: {{field.name}}</h3>
 <p>{{ field.description }}</p>
 <p> Status: {{field.status }}</p>
 <p> Latest comments: {{field.latest_comments}}</p>
