@@ -1,8 +1,9 @@
 ---
 layout: default
 ---
+{% assign dimension = site.data.dimensions | find: "id", page.dimension_id %}
 
-<h1>{{ page.dimensions.id | upcase }} Dimension</h1>
+<h1>{{ dimension.id | upcase }} Dimension</h1>
 
 <table>
 <thead>
@@ -12,7 +13,7 @@ layout: default
   <tr>
 </thead>
 <tbody>
-{% for d in page.dimensions.dimensions %}
+{% for d in dimension.dimensions %}
   <tr>
     <td>{{ d.value }}</td>
     <td>{{ d.description }}</td>

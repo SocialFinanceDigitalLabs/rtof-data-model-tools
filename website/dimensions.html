@@ -1,0 +1,41 @@
+---
+layout: default
+---
+
+<p>The following categorical lists are referenced throughout the specification.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Dimension ID</th>
+            <th>Value Count</th>
+            <th>Used By</th>
+            <th>Sample values</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for dimension in site.data.dimensions %}
+        <tr>
+            <td><a href="{{ '/dimensions/' | append: dimension.id | relative_url  }}">{{dimension.id}}</a></td>
+            <td>{{ dimension.dimensions | size }}</td>
+            <td>
+            {%- for record in site.data.records -%}
+                {% for f in record.fields -%}
+                    {% if f.dimensions.id == dimension.id -%}
+                        <a href="{{ '/records/' | append: record.id | relative_url  }}#{{f.id}}">{{record.id}}.{{f.id}}</a>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            </td>
+            <td>
+                {{ dimension.dimensions | slice: 0,3 | map: "value" | join: ", " }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+
+<!--Used by:-->
+
+

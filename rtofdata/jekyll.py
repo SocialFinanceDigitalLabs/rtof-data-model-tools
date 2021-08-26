@@ -77,7 +77,7 @@ def write_records(spec: Specification):
     for r in spec.records:
         with open(dir / f"{r.id}.md", "wt") as file:
             print("---", file=file)
-            yaml.dump(dict(record=dict(id=r.id), layout="record"), file)
+            yaml.dump(dict(layout="record", record_id=r.id), file, sort_keys=False)
             print("---", file=file)
 
     dir = jekyll_dir / "_data"
@@ -94,7 +94,7 @@ def write_dimensions(spec: Specification):
     for d in spec.dimensions:
         with open(dir / f"{d.id}.md", "wt") as file:
             print("---", file=file)
-            yaml.dump(dict(dimensions=asdict(d), layout="dimension"), file)
+            yaml.dump(dict(layout="dimension", dimension_id=d.id), file, sort_keys=False)
             print("---", file=file)
 
     dir = jekyll_dir / "_data"
