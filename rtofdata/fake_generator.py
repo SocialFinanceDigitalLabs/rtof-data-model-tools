@@ -101,3 +101,10 @@ def list(faker: Faker, context, field, **kwargs):
 
 def integer(faker: Faker, context, **kwargs):
     return faker.random.randint(0, 100)
+
+
+def age_finished_study(faker: Faker, context, record, min, max, **kwargs):
+    highest_qual_achieved = record['highest_qualification_achieved']
+    if highest_qual_achieved == "Unknown":
+        return faker.random.randint(min, max)
+    return None

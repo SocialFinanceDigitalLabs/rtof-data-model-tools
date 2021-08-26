@@ -47,6 +47,14 @@ def generate_record(spec, context, record_name, config, faker, ix):
     id = []
     for f in record_spec.fields:
         field_config = config.get("fields", {}).get(f.id, {})
+
+        validators = [v['description'] for v in f.validation]
+        probability = 1.0 if "required(True)" in validators else 0.5
+        probability = field_config.get("probability", probability)
+
+        if faker.random.random() > probability:
+            continue
+
         if f.foreign_keys:
             gen = lambda *args, **kwargs: context['parent_id']
         elif "method" in field_config:
@@ -58,7 +66,7 @@ def generate_record(spec, context, record_name, config, faker, ix):
         if "args" in field_config:
             args = field_config.get('args', {})
 
-        record[f.id] = gen(faker, context, field=f, **args)
+        record[f.id] = gen(faker, context, field=f, record=record, **args)
         if f.primary_key:
             id.append(record[f.id])
 

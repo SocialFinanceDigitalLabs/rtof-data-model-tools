@@ -27,6 +27,9 @@ records:
 
     records:
 
+      date_last_seen:
+        probability: .25
+
       baseline:
         probability: .75
         fields:
@@ -34,8 +37,13 @@ records:
             probability: .8
             method: ni_number
           temp_ni_number:
-            probability: .1
+            probability: .2
             method: temp_ni_number
+          age_finished_study:
+            method: age_finished_study
+            args:
+              min: 12
+              max: 25
 
       housing_entry:
         probability: .5
