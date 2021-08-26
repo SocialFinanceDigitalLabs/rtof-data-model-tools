@@ -26,13 +26,9 @@ layout: default
     <td>{{ field.name }}</td>
     <td>{{ field.type.id }}</td>
     <td>{% if field.dimensions %}
-        {% for d in site.dimensions %}
-          {% if d.dimensions.id == field.dimensions.id %}
-            <a href="{{site.baseurl}}/{{d.url}}">{{ d.dimensions.id }}</a>
-          {% endif %}
-        {% endfor %}
-      {% endif %}</td>
-    <td>{{ field.status }}</td>
+      <a href="{{ '/dimensions/' | append: field.dimensions.id | relative_url  }}">{{ field.dimensions.id }}</a>
+    {% endif %}</td>
+    <td class="decision_{{ field.status | downcase | replace: " ", "" }}">{{ field.status }}</td>
   </tr>
 {% endfor %}
 </tbody>
@@ -67,7 +63,7 @@ layout: default
 <section id="{{field.id}}">
 <h3>{{field.id}}: {{field.name}}</h3>
 <p>{{ field.description }}</p>
-<p> Status: {{field.status }}</p>
+<p> Status: <span class="decision_{{ field.status | downcase | replace: " ", "" }}">{{field.status }}</span></p>
 <p> Latest comments: {{field.latest_comments}}</p>
 
 <table>
@@ -75,7 +71,13 @@ layout: default
 {% if field.primary_key %}
   <tr><th>Primary Key</th><td>True</td></tr>
 {% endif %}
-{% if field.validation.required %}
+
+{% if field.dimensions %}
+  <tr><th>Dimension</th><td><a href="{{ '/dimensions/' | append: field.dimensions.id | relative_url  }}">{{ field.dimensions.id }}</a></td></tr>
+{% endif %}
+
+{% assign validation =  field.validation | map: 'description' %}
+{% if validation contains "required(True)" %}
   <tr><th>Required</th><td>True</td></tr>
 {% endif %}
 <tr>
@@ -83,7 +85,7 @@ layout: default
   <td>
     <ul>
       {% for v in field.validation %}
-        <li>{{v[0]}}</li>
+        <li>{{v.description}}</li>
       {% endfor %}
     </ul>
   </td>

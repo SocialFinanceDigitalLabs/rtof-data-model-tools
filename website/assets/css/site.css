@@ -1,5 +1,36 @@
+h1 {
+    font-size: 2rem;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 1.5rem;
+    text-decoration: underline;
+    font-weight: bold;
+    margin-top: 5em;
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-top: 3em;
+}
+
 img {
   max-width: 100%
+}
+
+.decision_decided {
+    color: green;
+}
+
+.decision_pendingconsideration {
+    color: orange;
+}
+
+.decision_blocked {
+    color: red;
 }
 
 .forkongithub a {

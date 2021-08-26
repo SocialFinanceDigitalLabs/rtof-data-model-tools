@@ -163,6 +163,14 @@ def parse_dimensions():
     return all_categories
 
 
+def _get_validator_description(name, config):
+    if isinstance(config, list):
+        return f"{name}({', '.join(config)})"
+    elif isinstance(config, dict):
+        return f"{name}({', '.join([f'{k}={v}' for k,v in config.items()])})"
+    else:
+        return f"{name}({config})"
+
 def parse_records(datatypes, categories, validators):
     categories = {c.id: c for c in categories}
     datatypes = {c.id: c for c in datatypes}
@@ -184,8 +192,19 @@ def parse_records(datatypes, categories, validators):
                 values['type'] = datatypes[values['type']]
                 field = Field(id=field_id, **values)
                 if "validation" in values:
-                    field.validation = [validators[v] for v in values['validation']]
-                if "dimension" in values['validation']:
+                    field.validation = [
+                        {
+                            "id": k,
+                            "args": v,
+                            "rule": validators[k],
+                            "description": _get_validator_description(k, v)
+                        }
+                        for k, v in values['validation'].items()
+                    ]
+                    print(values['validation'], field.validation)
+                else:
+                    field.validation = []
+                if "dimension" in values.get('validation', {}):
                     field.dimensions = categories[values['validation']['dimension']]
                 field_list.append(field)
 
