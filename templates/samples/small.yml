@@ -44,6 +44,11 @@ records:
             args:
               min: 12
               max: 25
+          age_profile_of_dependents_uk:
+            args:
+              min: 0
+              max: 5
+              unique: true
           date_arrived_in_uk:
             method: date_between
             args:
