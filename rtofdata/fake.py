@@ -1,20 +1,22 @@
 import argparse
 from datetime import timedelta
 
+import tablib
 import yaml
 from faker import Faker
 
 from rtofdata.config import output_dir, template_dir
+from rtofdata.fake_generator import get_date_or_delta
 from rtofdata.spec_parser import parse_specification
 from rtofdata import fake_generator
 
 
 def generate_records(datastore, spec, context, record_name, config):
     local_context = config.get('context', {})
-    if isinstance(local_context.get("start"), int):
-        local_context['start'] = context['date'] + timedelta(days=local_context['start'])
-    if isinstance(local_context.get("end"), int):
-        local_context['end'] = context['date'] + timedelta(days=local_context['end'])
+    if "start" in local_context:
+        local_context['start'] = get_date_or_delta(local_context.get("start"), context['date'])
+    if "end" in local_context:
+        local_context['end'] = get_date_or_delta(local_context.get("end"), context['date'])
 
     context = {**context, **local_context}
 
@@ -23,14 +25,15 @@ def generate_records(datastore, spec, context, record_name, config):
         faker.seed_instance(context["seed"])
 
     for ix in range(0, config.get("num", 1)):
-        if faker.random.random() > config['probability']:
+        if faker.random.random() > config.get('probability', 1.0):
             continue
         record_context = {**context, "date": faker.date_between(context['start'], context['end'])}
 
         id, record = generate_record(spec, record_context, record_name, config, faker, ix)
         datastore.setdefault(record_name, {})[id] = record
 
-        record_context["parent_id"] = id
+        if "parent_id" not in record_context:
+            record_context["parent_id"] = id
         record_context["seed"] = faker.random.randint(0, 1000000)
 
         for sub_record_name, sub_config in config.get('records', {}).items():
@@ -43,12 +46,13 @@ def generate_record(spec, context, record_name, config, faker, ix):
 
     id = []
     for f in record_spec.fields:
+        field_config = config.get("fields", {}).get(f.id, {})
         if f.foreign_keys:
             gen = lambda *args, **kwargs: context['parent_id']
             args = {}
-        elif f.sample_generator:
-            gen = getattr(fake_generator, f.sample_generator['method'])
-            args = f.sample_generator.get('args', {})
+        elif "method" in field_config:
+            gen = getattr(fake_generator, field_config['method'])
+            args = field_config.get('args', {})
         else:
             gen = getattr(fake_generator, f.type.id)
             args = {}
@@ -79,6 +83,19 @@ def create_all_data(config_file):
     return datastore
 
 
+def dataset_to_tablib(dataset):
+    dataset_list = []
+    for record_name, items in dataset.items():
+        items = [i for i in items.values()]
+        data = tablib.Dataset()
+        dataset_list.append(data)
+        data.headers = [k for k in items[0].keys()]
+        data.title = record_name
+        for item in items:
+            data.append(item.values())
+    return dataset_list
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Create fake data'
@@ -86,8 +103,14 @@ if __name__ == "__main__":
     parser.add_argument("config_file", type=str, nargs='?', help="The sample input generator")
     args = parser.parse_args()
     generated = create_all_data(args.config_file)
-    with open(output_dir / "sample.yml", "wt") as file:
-        yaml.dump(generated, file, sort_keys=False)
 
+    dataset = dataset_to_tablib(generated)
+    book = tablib.Databook(dataset)
+
+    with open(output_dir / "sample.xlsx", "wb") as file:
+        file.write(book.export('xlsx'))
+
+    with open(output_dir / "sample.yml", "wt") as file:
+        file.write(book.export('yaml'))
 
 

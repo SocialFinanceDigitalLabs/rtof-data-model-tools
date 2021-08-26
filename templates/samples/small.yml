@@ -6,29 +6,82 @@ context:
 records:
 
   person:
-    num: 100
-    probability: 1.0
+    num: 10
+    fields:
+      unique_id:
+        method: unique_identifier
+      year_of_birth:
+        method: date_between
+        args:
+          start_date: -65y
+          end_date: -18y
+          format: "%Y"
+          converter: int
+
     records:
 
-      housing_entry:
-        num: 1
-        probability: .25
-        context:
-          start: +30
-          end: +150
-        records:
-
-          housing_sustain:
-            num: 1
-            probability: .25
-            context:
-              start: +60
-              end: +365
-
       baseline:
-        num: 1
         probability: .75
+
+      housing_entry:
+        probability: .5
+        context:
+          start: 2m
+          end: 5m
+        records:
+          housing_sustain:
+            probability: .75
+            context:
+              start: 3m
+              end: 9m
 
       integration_plan:
-        num: 1
         probability: .75
+        context:
+          start: +1m
+          end: +6m
+        fields:
+          integration_outcome_type:
+            method: fixed
+            args:
+              value: Creation
+        records:
+          integration_plan:
+            probability: .75
+            context:
+              start: +6m
+              end: +7m
+            fields:
+              integration_outcome_type:
+                method: fixed
+                args:
+                  value: 6 month
+            records:
+              integration_plan:
+                probability: .75
+                context:
+                  start: +6m
+                  end: +7m
+                fields:
+                  integration_outcome_type:
+                    method: fixed
+                    args:
+                      value: 12 month
+
+      employment_entry:
+        probability: .75
+        context:
+          start: 1m
+          end: 6m
+        records:
+          employment_intermediate:
+            probability: .75
+            context:
+              start: 1m
+              end: 6m
+            records:
+              employment_sustain:
+                probability: .75
+                context:
+                  start: 1m
+                  end: 6m
