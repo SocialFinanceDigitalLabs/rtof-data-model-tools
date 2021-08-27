@@ -67,7 +67,7 @@ def write_word_specification(spec: Specification):
     context = create_context(spec)
     context['milestones_image'] = InlineImage(tpl, image_descriptor=str(assets_dir / 'submission_and_collection.png'),
                                               width=Cm(16))
-    context['milestones_image2'] = InlineImage(tpl, image_descriptor=str(assets_dir / 'Data_forms_to_be_submitted_2.png'),
+    context['milestones_image2'] = InlineImage(tpl, image_descriptor=str(assets_dir / 'RTOF_program_path.png'),
                                               width=Cm(16))
 
     context['erd_image'] = InlineImage(tpl, image_descriptor=str(output_dir / 'record-relationships.png'),

@@ -16,4 +16,4 @@ You can also download the [Word specification]({{ '/assets/spec/specification.do
 [list of categories]({{ '/assets/spec/specification-dimensions.xlsx' | relative_url }}) in Excel.
 
 [periods]: {{ "assets/src/submission_and_collection.png" | relative_url }}
-[forms]: {{ "assets/src/Data_forms_to_be_submitted_2.png" | relative_url }}
+[forms]: {{ "assets/src/RTOF_program_path.png" | relative_url }}
