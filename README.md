@@ -1,7 +1,13 @@
 # Data Model Tools for the Refugee Transitions Outcomes Fund (RTOF)
 
-This is the source repository for the RTOF data model tools for generating different outputs from the 
+This is the source repository for the RTOF data model tools for generating different outputs from the
 [core specification][rtof-spec].
+
+There are a number of different modules involved with parsing and validating the specification,
+compiling the documentation website and associated outputs, creating sample data and file validators.
+
+The tools are mostly written in Python, and the [website][rtof-web] is powered by [Jekyll][jekyll]
+and [GitHub Pages][ghp].
 
 ## Python Documentation Generators
 
@@ -56,15 +62,38 @@ import into other data systems.
 Finally, the [Jekyll][jekyll] [output module](./rtofdata/jekyll.py) generates a set of Jekyll pages
 to produce the website. The Jekyll configuration can be found in [website](./website).
 
-## Continuous Deployment
+## Transfer formats
 
-The whole specification uses [GitHub Actions][gha] to build and deploy the specification upon every push to the
-code repository. The [workflow file](./.github/workflows/main.yml) runs the python scripts to generate the outputs,
-uploads them to the Social Finance specification webhook, and then pushes the generated Jekyll website to a
-second [GitHub repository](https://github.com/SocialFinanceDigitalLabs/RTOF-specification) that is used to host
-the [GitHub pages](ghp) specification [site](https://sfdl.org.uk/RTOF-specification/).
+So far this documentation has discussed the "core" data model but not really discussed representation and
+information exchange. To make the transfer of data from providers to the central reporting function as streamlined
+as possible, provide a number of transfer formats that can be used for upload and reporting. 
+
+The most commonly used data interchange formats in this sector are Excel (xlsx), CSV, JSON and XML. Excel and CSV
+are tabular formats, whilst JSON and XML are hierarchical. We will therefore focus on these two abstract 
+representations.
+
+The core datamodel is relational but does include many-to-one relationships that are not easily represented in 
+pure tabular formats without either duplicating rows or columns. 
+
+So for tabular formats, records may be provided either one-by-one (separate file / worksheet for each type) or as a
+long format. All column names are unique, so if column names from multiple record types appear in the same file, 
+then all records will be added / updated. Omitted records will retain their previous values if they already existed. 
+
+For many-to-one relationship, columns can contain a suffix, e.g. `integration_outcome_type_1`. All columns
+belonging to that record must have the same suffix, i.e.:
+
+* integration_outcome_type_1
+* integration_outcome_achieved_date_1
+
+etc. 
+
+Alternatively, multiple rows can be provided, one for each record. 
+
 
 [rtof-spec]: https://github.com/SocialFinanceDigitalLabs/rtof-data-model
+[rtof-tools]: https://github.com/SocialFinanceDigitalLabs/rtof-data-model-tools
+[rtof-web]: https://sfdl.org.uk/RTOF-specification/
+
 [poetry]: https://python-poetry.org/
 [yaml]: https://yaml.org/
 [vcs]: https://en.wikipedia.org/wiki/Version_control
@@ -78,5 +107,3 @@ the [GitHub pages](ghp) specification [site](https://sfdl.org.uk/RTOF-specificat
 [jekyll]: https://jekyllrb.com/
 [gha]: https://github.com/features/actions
 [ghp]: https://pages.github.com/
-
-

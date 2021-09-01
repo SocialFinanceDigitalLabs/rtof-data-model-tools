@@ -12,6 +12,7 @@ from rtofdata.config import data_dir
 class Datatype:
     id: str
     description: str = None
+    extends: str = None
 
     def __str__(self):
         return self.id
@@ -42,10 +43,16 @@ class Field:
     comments: str = None
     primary_key: bool = False
     foreign_keys: List = None
-    validation: dict = None
+    validation: List = None
     dimensions: DimensionList = None
     status: str = None
     latest_comments: dict = None
+
+    def validation_get(self, key, default_value=None):
+        for v in self.validation:
+            if v['id'] == key:
+                return v['args']
+        return default_value
 
 
 @dataclass
@@ -57,6 +64,10 @@ class Record:
     @property
     def primary_keys(self) -> List[Field]:
         return [f for f in self.fields or [] if f.primary_key]
+
+    @property
+    def foreign_keys(self) -> List[Field]:
+        return [f for f in self.fields or [] if f.foreign_keys]
 
     def field_by_id(self, id):
         return [r for r in self.fields if r.id == id][0]
@@ -117,6 +128,22 @@ class Specification:
     def record_by_id(self, id):
         return [r for r in self.records if r.id == id][0]
 
+    def record_references(self, record_name):
+        references = []
+        for other_rec in self.records:
+            for fk_field in other_rec.foreign_keys:
+                for fk in fk_field.foreign_keys:
+                    if fk['record'] == record_name:
+                        references.append(dict(record=other_rec, field=fk_field, foreign_key=fk))
+        return references
+
+    @property
+    def top_level_records(self):
+        for rec in self.records:
+            fks = [f for f in rec.fields if f.foreign_keys]
+            if len(fks) == 0:
+                yield rec
+
     def dimension_by_id(self, id):
         return [r for r in self.dimensions if r.id == id][0]
 
@@ -167,7 +194,7 @@ def _get_validator_description(name, config):
     if isinstance(config, list):
         return f"{name}({', '.join(config)})"
     elif isinstance(config, dict):
-        return f"{name}({', '.join([f'{k}={v}' for k,v in config.items()])})"
+        return f"{name}({', '.join([f'{k}={v}' for k, v in config.items()])})"
     else:
         return f"{name}({config})"
 
@@ -275,4 +302,5 @@ def parse_specification():
     records = parse_records(datatypes, categories, validators)
     flows = parse_flow(records)
 
-    return Specification(records=records, dimensions=categories, flows=flows, validators=validators, datatypes=datatypes)
+    return Specification(records=records, dimensions=categories, flows=flows, validators=validators,
+                         datatypes=datatypes)

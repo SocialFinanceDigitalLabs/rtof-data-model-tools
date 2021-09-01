@@ -9,7 +9,7 @@ __delta_pattern = re.compile(r"([+-]?\d+)([ymd])?", flags=re.IGNORECASE)
 
 def get_date_or_delta(date_string, context_date):
     if not date_string:
-        context_date
+        return context_date
 
     if hasattr(date_string, "year"):
         return date_string
@@ -36,15 +36,15 @@ def get_date_or_delta(date_string, context_date):
         return context_date + relativedelta(days=value)
 
 
-def unique_identifier(faker: Faker, context, **kwargs):
+def unique_identifier(faker: Faker, *args, **kwargs):
     return faker.unique.bothify(text="??-##", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 
-def ni_number(faker: Faker, context, **kwargs):
+def ni_number(faker: Faker, *args, **kwargs):
     return faker.unique.bothify(text="??######", letters="ABCEGHJKLMNPRSTWXYZ") + faker.random.choice("ABCD")
 
 
-def temp_ni_number(faker: Faker, context, **kwargs):
+def temp_ni_number(faker: Faker, *args, **kwargs):
     return faker.unique.bothify(text="##T#####")
 
 
@@ -54,7 +54,7 @@ def year(faker: Faker, context, **kwargs):
     return faker.random.randint(start, end)
 
 
-def string(faker: Faker, context, field, **kwargs):
+def string(faker: Faker, *args, **kwargs):
     return faker.word()
 
 
@@ -97,7 +97,7 @@ def list(faker: Faker, context, field, min=0, max=2, unique=False, dimensions=No
         dimensions = field.dimensions.values
 
     num_values = faker.random.randint(min, max)
-    values = [faker.random.choice(field.dimensions.values) for i in range(0, num_values)]
+    values = [faker.random.choice(dimensions) for i in range(0, num_values)]
 
     if unique:
         values = set(values)
@@ -105,7 +105,7 @@ def list(faker: Faker, context, field, min=0, max=2, unique=False, dimensions=No
     return ", ".join(values)
 
 
-def integer(faker: Faker, context, **kwargs):
+def integer(faker: Faker, *args, **kwargs):
     return faker.random.randint(0, 100)
 
 

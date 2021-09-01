@@ -1,17 +1,16 @@
-import argparse
-from datetime import timedelta
-
-import tablib
 import yaml
 from faker import Faker
+from tqdm import trange
 
-from rtofdata.config import output_dir, template_dir
-from rtofdata.fake_generator import get_date_or_delta
+from rtofdata.config import template_dir
+from rtofdata.fake import generators
+from rtofdata.fake.generators import get_date_or_delta
 from rtofdata.spec_parser import parse_specification
-from rtofdata import fake_generator
+
+faker = Faker()
 
 
-def generate_records(datastore, spec, context, record_name, config):
+def generate_records(datastore, spec, context, record_name, config, progress=False):
     local_context = config.get('context', {})
     if "start" in local_context:
         local_context['start'] = get_date_or_delta(local_context.get("start"), context['date'])
@@ -20,11 +19,13 @@ def generate_records(datastore, spec, context, record_name, config):
 
     context = {**context, **local_context}
 
-    faker = Faker()
     if "seed" in context:
-        faker.seed_instance(context["seed"])
+        Faker.seed(context["seed"])
+        del context["seed"]
 
-    for ix in range(0, config.get("num", 1)):
+    my_range = trange if progress else range
+
+    for ix in my_range(0, config.get("num", 1)):
         if faker.random.random() > config.get('probability', 1.0):
             continue
         record_context = {**context, "date": faker.date_between(context['start'], context['end'])}
@@ -34,7 +35,6 @@ def generate_records(datastore, spec, context, record_name, config):
 
         if "parent_id" not in record_context:
             record_context["parent_id"] = id
-        record_context["seed"] = faker.random.randint(0, 1000000)
 
         for sub_record_name, sub_config in config.get('records', {}).items():
             generate_records(datastore, spec, record_context, sub_record_name, sub_config)
@@ -58,9 +58,9 @@ def generate_record(spec, context, record_name, config, faker, ix):
         if f.foreign_keys:
             gen = lambda *args, **kwargs: context['parent_id']
         elif "method" in field_config:
-            gen = getattr(fake_generator, field_config['method'])
+            gen = getattr(generators, field_config['method'])
         else:
-            gen = getattr(fake_generator, f.type.id)
+            gen = getattr(generators, f.type.id)
 
         args = {}
         if "args" in field_config:
@@ -73,8 +73,9 @@ def generate_record(spec, context, record_name, config, faker, ix):
     return id[0] if len(id) < 2 else tuple(id), record
 
 
-def create_all_data(config_file=None):
-    spec = parse_specification()
+def create_all_data(spec=None, config_file=None, num=None, progress=False):
+    if not spec:
+        spec = parse_specification()
 
     if config_file is None:
         config_file = template_dir / "samples/small.yml"
@@ -87,39 +88,8 @@ def create_all_data(config_file=None):
 
     datastore = {}
     for record_name, config in records.items():
-        generate_records(datastore, spec, context, record_name, config)
+        if num:
+            config["num"] = num
+        generate_records(datastore, spec, context, record_name, config, progress=progress)
 
     return datastore
-
-
-def dataset_to_tablib(dataset):
-    dataset_list = []
-    for record_name, items in dataset.items():
-        items = [i for i in items.values()]
-        data = tablib.Dataset()
-        dataset_list.append(data)
-        data.headers = [k for k in items[0].keys()]
-        data.title = record_name
-        for item in items:
-            data.append(item.values())
-    return dataset_list
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description='Create fake data'
-    )
-    parser.add_argument("config_file", type=str, nargs='?', help="The sample input generator")
-    args = parser.parse_args()
-    generated = create_all_data(args.config_file)
-
-    dataset = dataset_to_tablib(generated)
-    book = tablib.Databook(dataset)
-
-    with open(output_dir / "sample.xlsx", "wb") as file:
-        file.write(book.export('xlsx'))
-
-    with open(output_dir / "sample.yml", "wt") as file:
-        file.write(book.export('yaml'))
-
-

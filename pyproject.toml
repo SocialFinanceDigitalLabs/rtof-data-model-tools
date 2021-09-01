@@ -18,6 +18,9 @@ Faker = "^8.11.0"
 graphviz = "^0.17"
 Jinja2 = "^3.0.1"
 tablib = "^3.0.0"
+tqdm = "^4.62.2"
+SQLAlchemy = "^1.4.23"
+pyhumps = "^3.0.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.2"
