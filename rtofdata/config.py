@@ -16,6 +16,7 @@ data_dir = data_root / 'data'
 template_dir = root / "templates"
 
 output_dir = root / 'output'
+output_dir.mkdir(parents=True, exist_ok=True)
 
 jekyll_dir = root / "website"
 

@@ -140,6 +140,8 @@ cython_debug/
 ~$
 Graphviz
 
+/output
+
 website/_data
 website/_includes/dynamic
 website/collections/_*

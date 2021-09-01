@@ -1,52 +1,32 @@
+import os
 import argparse
-from pathlib import Path
-
-import tablib
-from sqlalchemy import create_engine
-
-from rtofdata.config import output_dir
-from rtofdata.fake.faker import create_all_data
-from rtofdata.fake.serialization import dataset_to_tablib, dataset_to_wide
-from rtofdata.fake.sql import create_schema, insert_into_database, get_orm_mappings, database_to_wide
-from rtofdata.spec_parser import parse_specification
-
-parser = argparse.ArgumentParser(
-    description='Create fake data'
-)
-parser.add_argument("config_file", type=str, nargs='?', help="The sample input generator")
-parser.add_argument("-n", "--number", type=int, nargs='?', help="The number of top-level records to generate")
-args = parser.parse_args()
-
-spec = parse_specification()
-
-metadata_obj = create_schema(spec)
-
-generated = create_all_data(spec=spec, config_file=args.config_file, num=args.number, progress=True)
-
-tabular = dataset_to_tablib(generated, spec)
-book = tablib.Databook(tabular)
-
-name_root = "samples/sample"
-
-Path(output_dir / name_root).parent.mkdir(parents=True, exist_ok=True)
-
-with open(output_dir / f"{name_root}.xlsx", "wb") as file:
-    file.write(book.export('xlsx'))
-
-for table in tabular:
-    with open(output_dir / f"{name_root}_record_{table.title}.csv", "wt") as file:
-        file.write(table.export('csv'))
-
-sql_database = Path(output_dir / "samples/sqlite.db")
-sql_database.unlink(missing_ok=True)
-engine = create_engine(f'sqlite:///{sql_database.absolute()}')
-metadata_obj.create_all(engine)
-insert_into_database(engine, metadata_obj, generated)
-
-data = database_to_wide(engine, spec)
-with open(output_dir / f"{name_root}_wide.csv", "wt") as file:
-    file.write(data.export("csv"))
 
 
-with open(output_dir / f"{name_root}.yml", "wt") as file:
-    file.write(book.export('yaml'))
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description='Create fake data'
+    )
+    parser.add_argument("config_file", type=str, nargs='?', help="The sample input generator")
+    parser.add_argument("-n", "--number", type=int, nargs='?', help="The number of top-level records to generate")
+    parser.add_argument("-o", "--output", type=str, nargs='?', help="The output folder")
+    parser.add_argument("-r", "--root", type=str, nargs='?', help="The output filename root")
+    parser.add_argument("-d", "--data-dir", type=str, nargs="?", help="Location of RTOF data repository")
+
+    args = parser.parse_args()
+
+    if args.data_dir:
+        os.environ["DATA_ROOT"] = args.data_dir
+
+    kwargs = {}
+    if args.output:
+        kwargs['sample_output'] = args.output
+    if args.root:
+        kwargs['sample_root'] = args.root
+    if args.number:
+        kwargs['num'] = args.number
+
+    # We do this after the DATA_ROOT has been configured
+    from .output import write_samples
+    write_samples(args.config_file, **kwargs)
+
+
