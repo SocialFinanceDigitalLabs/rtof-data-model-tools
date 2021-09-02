@@ -11,10 +11,11 @@ def main(data_dir=None):
     from rtofdata.erd import create_erd
     from rtofdata.excel import write_excel_specification
     from rtofdata.jekyll import write_jekyll_specification
-    from rtofdata.spec_parser import parse_specification
+    from rtofdata.specification.parser import parse_specification, validate_specification
     from rtofdata.word import write_word_specification
 
     spec = parse_specification()
+    validate_specification(spec)
 
     create_erd(spec)
     write_word_specification(spec)

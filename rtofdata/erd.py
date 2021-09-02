@@ -4,7 +4,7 @@ import graphviz
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from rtofdata.config import output_dir, template_dir
-from rtofdata.spec_parser import Specification
+from rtofdata.specification.data import Specification
 
 
 def create_erd(spec: Specification):

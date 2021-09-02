@@ -6,7 +6,7 @@ import yaml
 
 from rtofdata.config import jekyll_dir, output_dir, assets_dir as src_assets
 from rtofdata.fake.faker import create_all_data
-from rtofdata.spec_parser import Specification
+from rtofdata.specification.data import Specification
 from rtofdata.word import get_git_data
 
 assets_dir = jekyll_dir / "assets/spec/"

@@ -6,7 +6,7 @@ import tablib
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 
-from rtofdata.spec_parser import Specification
+from rtofdata.specification.data import Specification
 
 
 def create_schema(spec: Specification):

@@ -2,7 +2,7 @@ from openpyxl import Workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
 from rtofdata.config import output_dir, output_filename_base
-from rtofdata.spec_parser import Specification
+from rtofdata.specification.data import Specification
 
 
 def write_excel_specification(spec: Specification):

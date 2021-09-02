@@ -2,7 +2,7 @@ import re
 
 import tablib
 
-from rtofdata.spec_parser import Specification
+from rtofdata.specification.data import Specification
 
 
 def dataset_to_tablib(dataset, spec: Specification):

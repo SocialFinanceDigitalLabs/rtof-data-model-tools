@@ -5,7 +5,7 @@ from tqdm import trange
 from rtofdata.config import template_dir
 from rtofdata.fake import generators
 from rtofdata.fake.generators import get_date_or_delta
-from rtofdata.spec_parser import parse_specification
+from rtofdata.specification.parser import parse_specification
 
 faker = Faker()
 
