@@ -54,6 +54,9 @@ records:
               start_date: -18m
               end_date: -6m
               format: '%Y-%m'
+          homelessness_baseline:
+            probability: 0
+            required_if: one_of(housing_baseline_accommodation, ['Homeless and rough sleeping', 'Homeless but not rough sleeping (e.g. living with friends or family)'])
 
       housing_entry:
         probability: .5
