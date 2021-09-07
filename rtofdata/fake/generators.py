@@ -54,6 +54,11 @@ def year(faker: Faker, context, **kwargs):
     return faker.random.randint(start, end)
 
 
+def monthyear(faker: Faker, context, **kwargs):
+    my_date = date(faker, context, **kwargs)
+    return my_date.strftime("%Y-%m")
+
+
 def string(faker: Faker, *args, **kwargs):
     return faker.word()
 

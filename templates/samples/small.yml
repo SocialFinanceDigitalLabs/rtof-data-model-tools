@@ -47,11 +47,13 @@ records:
             args:
               start_date: -5y
               end_date: -2y
+              format: '%Y-%m'
           date_asylum_status_granted:
             method: date_between
             args:
               start_date: -18m
               end_date: -6m
+              format: '%Y-%m'
 
       housing_entry:
         probability: .5
