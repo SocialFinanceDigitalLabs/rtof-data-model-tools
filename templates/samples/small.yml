@@ -111,6 +111,11 @@ records:
             context:
               start: 1m
               end: 6m
+            fields:
+              intermediate_employment_outcome_type:
+                args:
+                  min: 3
+                  max: 5
             records:
               employment_sustain:
                 probability: .75
