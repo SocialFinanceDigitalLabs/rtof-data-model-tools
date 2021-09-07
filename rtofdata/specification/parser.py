@@ -27,7 +27,9 @@ def parse_dimensions():
 
 
 def _get_validator_description(name, config):
-    if isinstance(config, list):
+    if name == 'conditional':
+        return f"conditional rules apply"
+    elif isinstance(config, list):
         return f"{name}({', '.join(config)})"
     elif isinstance(config, dict):
         return f"{name}({', '.join([f'{k}={v}' for k, v in config.items()])})"
