@@ -17,13 +17,6 @@ records:
           end_date: -18y
           format: "%Y"
           converter: int
-      dispersal_area:
-        method: categorical
-        args:
-          dimensions:
-            - Area 1
-            - Area 2
-            - Area 3
 
     records:
 
