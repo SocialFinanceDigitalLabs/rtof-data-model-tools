@@ -10,7 +10,7 @@ The validation rules that apply for each field are noted in the grey tables for 
 
 # Data Submissions
 
-Within each record page on this site, we have included sample data, providing an example of how data submissions should look. We will update this webpage with an additional tab, titled "Sample Submissions" which will provide a single row of data for each record, as well as mulitple downloadable links to sample data in excel - including both examples described below.      
+Within each record page on this site we have included sample data, providing an example of how data submissions should look. We will update this webpage with an additional tab, titled "Sample Submissions" which will provide mulitple downloadable links to sample data in excel - including both examples described below.      
 
 The RTOF datamodel is relational but does include many-to-one relationships that are not easily represented in pure tabular formats without either duplicating rows or columns.
 
