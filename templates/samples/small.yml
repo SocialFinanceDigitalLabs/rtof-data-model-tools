@@ -27,7 +27,7 @@ records:
         probability: .75
         fields:
           ni_number:
-            probability: .8
+            probability: .9
             method: ni_number
           temp_ni_number:
             probability: .2
