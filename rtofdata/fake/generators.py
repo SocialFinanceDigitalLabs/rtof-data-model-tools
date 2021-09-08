@@ -97,7 +97,7 @@ def categorical(faker: Faker, context, field, dimensions=None, **kwargs):
         return None
 
 
-def list(faker: Faker, context, field, min=0, max=2, unique=False, dimensions=None, sort_values=True, **kwargs):
+def list(faker: Faker, context, field, min=0, max=2, unique=True, dimensions=None, sort_values=True, **kwargs):
     if dimensions is None:
         dimensions = field.dimensions.values
 
