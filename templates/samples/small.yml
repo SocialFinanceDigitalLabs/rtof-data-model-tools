@@ -40,12 +40,12 @@ records:
             probability: 0
             required_if: one_of(highest_qualification_achieved, ['Unknown'])
           number_u18_HH:
-            method: integer
+            method: integer2
             args:
               min: 0
               max: 8
           number_over_18_HH:
-            method: integer
+            method: integer2
             args:
               min: 0
               max: 8          
