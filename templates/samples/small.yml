@@ -37,11 +37,21 @@ records:
             args:
               min: 12
               max: 25
+              required_if: one_of(highest_qualification_achieved, ['Unknown'])
+          number_u18_HH:
+            args:
+              min: 0
+              max: 8
+          number_over_18_HH:
+            args:
+              min: 0
+              max: 8          
           age_profile_of_dependents_uk:
             args:
               min: 0
               max: 5
               unique: true
+              required_if: one_of(current_dependents_uk, ['Yes'])
           date_arrived_in_uk:
             method: date_between
             args:
@@ -54,6 +64,12 @@ records:
               start_date: -18m
               end_date: -6m
               format: '%Y-%m'
+          occupation_type:
+            probability: 0 
+            required_if: one_of(employed_in_home_country, ['Yes'])
+          occupation_sector:
+            probability: 0 
+            required_if: one_of(employed_in_home_country, ['Yes'])
           homelessness_baseline:
             probability: 0
             required_if: one_of(housing_baseline_accommodation, ['Homeless and rough sleeping', 'Homeless but not rough sleeping (e.g. living with friends or family)'])
