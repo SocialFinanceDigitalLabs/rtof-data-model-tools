@@ -19,9 +19,9 @@ So for tabular formats, records may be provided either one-by-one (separate file
 
 For many-to-one relationship, columns can contain a suffix, e.g. integration_outcome_type_1. All columns belonging to that record must have the same suffix, i.e.:
 
-*integration_outcome_type_1
-*integration_outcome_achieved_date_1
-etc.
+- integration_outcome_type_1
+- integration_outcome_achieved_date_1
+- etc.
 
 Alternatively, multiple rows can be provided, one for each record.
 
