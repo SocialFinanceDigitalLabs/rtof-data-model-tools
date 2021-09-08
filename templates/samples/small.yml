@@ -37,20 +37,24 @@ records:
             args:
               min: 12
               max: 25
+              probability: 0
               required_if: one_of(highest_qualification_achieved, ['Unknown'])
           number_u18_HH:
+            method: integer
             args:
               min: 0
               max: 8
           number_over_18_HH:
+            method: integer
             args:
               min: 0
               max: 8          
           age_profile_of_dependents_uk:
+            method: integer
             args:
               min: 0
               max: 5
-              unique: true
+              probability: 0
               required_if: one_of(current_dependents_uk, ['Yes'])
           date_arrived_in_uk:
             method: date_between
