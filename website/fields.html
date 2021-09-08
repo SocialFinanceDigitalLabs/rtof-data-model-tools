@@ -1,0 +1,37 @@
+---
+layout: default
+title: Fields
+---
+
+<table>
+<thead>
+  <tr>
+    <th>Field ID</th>
+    <th>Record</th>
+    <th>Type</th>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Decision status</th>
+  <tr>
+</thead>
+<tbody>
+{% for f in site.data.fields %}
+  {% assign field = f[1] %}
+  <tr>
+    <td><a href="{{ '/records/' | append: field.record | relative_url  }}#{{ field.id }}">
+      {{ field.id }} {% if field.primary_key %} <b>[PK]</b>{% endif %}
+    </a>
+    </td>
+    <td>{{ field.record }}</td>
+    <td>{{ field.type.id }}
+    {% if field.dimensions %}
+      (<a href="{{ '/dimensions/' | append: field.dimensions.id | relative_url  }}" title="{{ field.dimensions.id }}">{{ field.dimensions.id | truncate: 20 }}</a>)
+    {% endif %}
+    </td>
+    <td>{{ field.name }}</td>
+    <td>{{ field.description }}</td>
+    <td class="decision_{{ field.status | downcase | replace: " ", "" }}">{{ field.status }}</td>
+  </tr>
+{% endfor %}
+</tbody>
+</table>

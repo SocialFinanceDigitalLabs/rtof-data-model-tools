@@ -86,6 +86,17 @@ def write_records(spec: Specification):
         records = [asdict(f.record, dict_factory=dict_factory) for f in spec.records_by_flow]
         yaml.dump(records, file)
 
+    with open(dir / "fields.yml", "wt") as file:
+        records = {
+            f.field.id: {
+                "record": f.record.id,
+                **asdict(f.field, dict_factory=dict_factory),
+            } for f in spec.fields if not f.field.foreign_keys
+        }
+        keys = sorted(records.keys())
+        records = {k: records[k] for k in keys}
+        yaml.dump(records, file)
+
 
 def write_dimensions(spec: Specification):
     dir = jekyll_dir / "collections/_dimensions/"
