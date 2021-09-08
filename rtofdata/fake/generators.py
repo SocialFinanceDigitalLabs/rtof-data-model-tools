@@ -71,7 +71,7 @@ def fixed(faker: Faker, context, value, **kwargs):
     return value
 
 
-def date_between(faker: Faker, context, start_date, end_date, format=None, converter=None, **kwargs):
+def date_between(faker: Faker, context, start_date, end_date, format="%Y-%m-%d", converter=None, **kwargs):
     start_date = get_date_or_delta(start_date, context['date'])
     end_date = get_date_or_delta(end_date, context['date'])
 
