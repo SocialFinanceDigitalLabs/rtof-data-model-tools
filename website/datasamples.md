@@ -13,7 +13,8 @@ In the "single record per CSV" format, each of the fields associated with a reco
 are present in a CSV file. The files can be named as you like as the record type is derived from the 
 column headers, but it is helpful to include the record type in the name:
 
-| Filename |Description|
+| Filename | Description |
+| -------- | ----------- | 
 {% for r in site.data.records -%}
 | [sample_record_{{r.id}}.csv][sr_{{r.id}}_csv] | Sample data for the [{{r.id}}][rec_{{r.id}}] record in a single CSV |
 {% endfor %}
@@ -29,8 +30,9 @@ e.g. `integration_outcome_type_1`, `integration_outcome_type_2`.
 All columns belonging to that record must have the same suffix, e.g.:
 
 | unique_id | integration_outcome_type_1 | integration_outcome_achieved_date_1 | integration_outcome_type_2 | integration_outcome_achieved_date_2 |
-| DP-14 | Creation | 2023-02-15 | | |
-| ES-97 | Creation | 2022-11-06 | 6 month | 2023-08-26 |
+| ----------| -------------------------- | ----------------------------------- | -------------------------- | ------------------------------------|
+| DP-14     | Creation                   | 2023-02-15 
+| ES-97     | Creation                   | 2022-11-06                          | 6 month                    | 2023-08-26 
 
 Download [complete example]({{ '/assets/spec/samples/sample_wide.csv' | relative_url }}).
 
