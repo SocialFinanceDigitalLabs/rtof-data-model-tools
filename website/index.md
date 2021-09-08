@@ -11,19 +11,13 @@ The validation rules that apply for each field are noted in the grey tables for 
 
 # Data Submissions
 
-Within each record page on this site we have included sample data, providing an example of how data submissions should look. We will update this webpage with an additional tab, titled "Sample Submissions" which will provide mulitple downloadable links to sample data in excel - including both examples described below.      
+Within each record page on this site we have included sample data, providing an example of how data submissions 
+should look. 
 
-The RTOF datamodel is relational but does include many-to-one relationships that are not easily represented in pure tabular formats without either duplicating rows or columns.
-
-So for tabular formats, records may be provided either one-by-one (separate file / worksheet for each type) or as a long format. All column names are unique, so if column names from multiple record types appear in the same file, then all records will be added / updated. Omitted records will retain their previous values if they already existed.
-
-For many-to-one relationship, columns can contain a suffix, e.g. integration_outcome_type_1. All columns belonging to that record must have the same suffix, i.e.:
-
-- integration_outcome_type_1
-- integration_outcome_achieved_date_1
-- etc.
-
-Alternatively, multiple rows can be provided, one for each record.
+The RTOF datamodel is relational but does include many-to-one relationships that are not easily represented 
+in pure tabular formats without either duplicating rows or columns. For more information on how to represent 
+these, as well as more detailed examples of all the submission formats, see the 
+[samples page]({{ '/datasamples' | relative_url }}).
 
 ![Diagram explaining the different data collections periods and submission frequency][periods]
 
