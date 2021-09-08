@@ -16,7 +16,8 @@ def get_git_data():
 
     tagmap = {}
     for t in repo.tags:
-        tagmap.setdefault(repo.commit(t), []).append(t)
+        cmt = repo.commit(t)
+        tagmap.setdefault(cmt, []).append(t)
 
     git_tag = tagmap.get(repo.head.object)
     if git_tag:
@@ -36,6 +37,13 @@ def get_git_data():
         "git_committer_name": repo.head.object.committer.name,
         "git_committer_email": repo.head.object.committer.email,
         "git_tags": [str(t) for t in git_tag] if git_tag else [],
+        "git_tagrefs": [{
+            "tag": str(t),
+            "message": t.commit.message,
+            "date": t.commit.committed_date,
+            "comitter_name": t.commit.committer.name,
+            "comitter_email": t.commit.committer.email,
+        } for t in repo.tags],
     }
 
 
