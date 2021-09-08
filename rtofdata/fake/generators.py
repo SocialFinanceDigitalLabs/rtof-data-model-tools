@@ -113,11 +113,9 @@ def list(faker: Faker, context, field, min=0, max=2, unique=False, dimensions=No
     return ", ".join(values)
 
 
-def integer(faker: Faker, *args, **kwargs):
-    return faker.random.randint(0, 100)
+def integer(faker: Faker, *args, min=0, max=100, **kwargs):
+    return faker.random.randint(min, max)
 
-def integer2(faker: Faker, *args, **kwargs):
-    return faker.random.randint(0, 8)
 
 def age_finished_study(faker: Faker, context, record, min, max, **kwargs):
     highest_qual_achieved = record['highest_qualification_achieved']
