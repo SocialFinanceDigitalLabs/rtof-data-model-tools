@@ -1,55 +1,111 @@
 #!/usr/bin/env python
+import hashlib
+import re
 
-from dataclasses import field, fields
-import os
-from os import name
-from re import X, match
-from typing import ChainMap
-from typing_extensions import Concatenate
-from rtofdata.specification.data import Record
 import tablib
-from collections import namedtuple
-FieldRecord = namedtuple("FieldRecord", ["field", "record", "flow"])
-from rtofdata.specification.parser import parse_specification, validate_specification
-from collections import defaultdict
-from functools import reduce
-from itertools import chain, groupby
+import yaml
+
+from rtofdata.specification.parser import parse_specification
 
 from rtofdata.config import output_dir
 spec = parse_specification()
-field_ids = [f.field.id for f in spec.fields if not f.field.foreign_keys]
+field_ids = [f for f in spec.fields if not f.field.foreign_keys]
+
+ptn_field_id = re.compile(r"[^a-z0-9]")
 
 
-data = [output_dir / 'samples/sample_record_person.csv', output_dir / 'samples/sample_record_baseline.csv']
-
-folderpath = output_dir / 'samples'
-
-filepaths = [os.path.join(folderpath, name) for name in os.listdir(folderpath)] 
-
-all_files = []
-for path in data:
-    with open(path, 'r') as fh:
-        file = tablib.Dataset().load(fh)
-        all_files.append(file)
-
-all_data = []
-for file in all_files:    
-    data_i = file.dict
-    all_data += data_i
-
-combine_on_id = map(lambda dict_tuple: dict(ChainMap(*dict_tuple[1])), 
-    groupby(sorted(all_data, key = lambda sub_dict: sub_dict["unique_id"]), 
-    key= lambda sub_dict: sub_dict["unique_id"]))
-
-unique_id_combine = list(combine_on_id)
-print(unique_id_combine[:2])
+def fix_field_id(field_id):
+    if field_id is None:
+        return None
+    return ptn_field_id.sub("", field_id.lower())
 
 
+def get_by_field_id(field_id):
+    field_id = fix_field_id(field_id)
+    for f in field_ids:
+        fid = fix_field_id(f.field.id)
+        if field_id.startswith(fid):
+            return f, field_id[len(fid):]
 
-#for file in all_files:
- # fields_included = [x for x in field_ids if x in file.headers]
-#for file in all_files:
- # fields_not_included = [x for x in field_ids if x not in  file.headers]
 
-#(f"Fields included in this submission: {fields_included}")
-#(f"Fields not included in this submission: {fields_not_included}")
+sample_dir = output_dir / 'samples'
+input_files = list(sample_dir.glob("*.csv")) + list(sample_dir.glob("*.xlsx"))
+
+
+def _pick_value(row_data, **kwargs):
+    def _matches(c):
+        for key, value in kwargs.items():
+            if c.get(key) != value:
+                return False
+        return True
+
+    matches = [c['value'] for c in row_data if _matches(c)]
+    if matches:
+        return matches[0]
+
+
+parsed_data = []
+
+for filename in input_files:
+    if filename.suffix == ".csv":
+        with open(filename, 'rt') as fh:
+            dataset = tablib.Dataset().load(fh, format="csv")
+            databook = tablib.Databook([dataset])
+    elif filename.suffix == ".xlsx":
+        with open(filename, 'rb') as fh:
+            databook = tablib.Databook().load(fh, format="xlsx")
+    else:
+        print("Unknown file type", filename)
+        continue
+
+    with open(filename, 'rb') as fh:
+        digest = hashlib.sha512(fh.read())
+    digest = digest.hexdigest()
+
+    for dataset in databook.sheets():
+        fields = [get_by_field_id(h) for h in dataset.headers]
+        for ix, f in enumerate(fields):
+            if f is None:
+                print("Header not found:", dataset.headers[ix])
+
+        for row_ix, row in enumerate(dataset):
+            row_data = []
+            for ix, f in enumerate(fields):
+                if f is not None:
+                    field, suffix = f
+                    row_data.append({
+                        "$field": field,
+                        "field": field.field.id,
+                        "record": field.record.id,
+                        "suffix": suffix,
+                        "value": row[ix],
+                        "filename": filename.name,
+                        "sheet": dataset.title,
+                        "row": row_ix,
+                        "file_sha512": digest,
+                    })
+
+            unique_id = _pick_value(row_data, field="unique_id")
+            if not unique_id:
+                print("Unique ID not found in", row_data)
+
+            for c in row_data:
+                field = c['$field']
+                keys = [f for f in field.record.primary_keys]
+                key_values = []
+                for key in keys:
+                    if key.foreign_keys:
+                        for fk in key.foreign_keys:
+                            key_values.append(_pick_value(row_data, field=fk['field'], record=fk['record']))
+                    else:
+                        key_values.append(_pick_value(row_data, field=key.id, suffix=c['suffix']))
+                c['primary_key'] = key_values
+                del c['$field']
+
+            parsed_data += row_data
+
+print("Parse complete")
+with open(output_dir / "parsed_output.yaml", "wt") as file:
+    yaml.dump(parsed_data, file, sort_keys=False)
+
+print("Output saved")
