@@ -32,11 +32,6 @@ for path in data:
         file = tablib.Dataset().load(fh)
         all_files.append(file)
 
-headers = []
-for file in all_files:
-    headers_i = (file.headers)
-    headers += headers_i
-
 all_data = []
 for file in all_files:    
     data_i = file.dict
@@ -51,11 +46,10 @@ print(unique_id_combine[:2])
 
 
 
-# for file in all_files:
-  #  fields_included = [x for x in field_ids if x in headers]
-
-# for file in all_files:
-  #  fields_not_included = [x for x in field_ids if x not in  headers]
+#for file in all_files:
+ # fields_included = [x for x in field_ids if x in file.headers]
+#for file in all_files:
+ # fields_not_included = [x for x in field_ids if x not in  file.headers]
 
 #(f"Fields included in this submission: {fields_included}")
-#(f"Fields not included in this submission {fields_not_included}")
+#(f"Fields not included in this submission: {fields_not_included}")
