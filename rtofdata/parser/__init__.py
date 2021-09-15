@@ -1,14 +1,12 @@
 import hashlib
 import re
 from pathlib import Path
-from typing import List
-
 import tablib
 
-from rtofdata.specification.data import Specification
+_ptn_field_id = re.compile(r"[^a-z0-9]")
 
 
-def _pick_value(row_data, **kwargs):
+def pick_value(row_data, **kwargs):
     def _matches(c):
         for key, value in kwargs.items():
             if c.get(key) != value:
@@ -24,88 +22,29 @@ def _pick_value(row_data, **kwargs):
         raise ValueError(f"Multiple matches found: {matches}")
 
 
-class Parser:
-    __ptn_field_id = re.compile(r"[^a-z0-9]")
+def fix_field_id(field_id):
+    if field_id is None:
+        return None
+    return _ptn_field_id.sub("", field_id.lower())
 
-    def __init__(self, spec: Specification):
-        self.__spec = spec
-        self.__all_fields = [(self._fix_field_id(f.field.id), f) for f in spec.fields if not f.field.foreign_keys]
 
-    def _fix_field_id(self, field_id):
-        if field_id is None:
-            return None
-        return self.__ptn_field_id.sub("", field_id.lower())
-
-    def get_by_field_id(self, field_id):
-        field_id = self._fix_field_id(field_id)
-        for fid, field in self.__all_fields:
-            if field_id.startswith(fid):
-                return field, field_id[len(fid):]
-
-    def parse_file(self, filename: Path) -> List:
-        if filename.suffix == ".csv":
-            with open(filename, 'rt') as fh:
-                dataset = tablib.Dataset().load(fh, format="csv")
-                databook = tablib.Databook([dataset])
-        elif filename.suffix == ".xlsx":
-            with open(filename, 'rb') as fh:
-                databook = tablib.Databook().load(fh, format="xlsx")
-        else:
-            raise Exception(f"Unknown file type: {filename}")
-
+def file_to_databook(filename: Path):
+    if filename.suffix == ".csv":
+        with open(filename, 'rt') as fh:
+            dataset = tablib.Dataset().load(fh, format="csv")
+            databook = tablib.Databook([dataset])
+    elif filename.suffix == ".xlsx":
         with open(filename, 'rb') as fh:
-            digest = hashlib.sha512(fh.read())
-        digest = digest.hexdigest()
+            databook = tablib.Databook().load(fh, format="xlsx")
+    else:
+        raise Exception(f"Unknown file type: {filename}")
 
-        parsed_data = []
-        for dataset in databook.sheets():
-            fields = [self.get_by_field_id(h) for h in dataset.headers]
-            for ix, f in enumerate(fields):
-                if f is None:
-                    print("Header not found:", dataset.headers[ix])
+    return databook
 
-            for row_ix, row in enumerate(dataset):
-                row_data = []
-                for ix, f in enumerate(fields):
-                    if f is not None:
-                        field, suffix = f
-                        row_data.append({
-                            "$field": field,
-                            "field": field.field.id,
-                            "record": field.record.id,
-                            "suffix": suffix,
-                            "value": row[ix],
-                            "filename": filename.name,
-                            "sheet": dataset.title,
-                            "row": row_ix,
-                            "file_sha512": digest,
-                        })
 
-                unique_id = _pick_value(row_data, field="unique_id")
-                if not unique_id:
-                    print("Unique ID not found in", row_data)
+def file_to_digest(filename: Path):
+    with open(filename, 'rb') as fh:
+        return hashlib.sha512(fh.read()).hexdigest()
 
-                for c in row_data:
-                    field = c['$field']
-                    keys = [f for f in field.record.primary_keys]
-                    key_values = []
-                    for key in keys:
-                        if key.foreign_keys:
-                            for fk in key.foreign_keys:
-                                key_values.append(_pick_value(row_data, field=fk['field'], record=fk['record']))
-                        else:
-                            key_val = _pick_value(row_data, field=key.id, suffix=c['suffix'])
-                            key_values.append(key_val)
-                    c['primary_key'] = key_values
-                    del c['$field']
 
-                by_key = {}
-                for d in row_data:
-                    by_key.setdefault((d['record'], *d['primary_key']), []).append(d)
-
-                for key, record_data in by_key.items():
-                    values = [r['value'] for r in record_data if r['value'] != ""]
-                    if len(values) > 0:
-                        parsed_data += record_data
-
-        return parsed_data
+from .parser import Parser
