@@ -25,6 +25,7 @@ def main(input_files, output_dir=None):
         infile = Path(filename)
         data = parser.parse_file(infile)
         outfile = output_dir / f"{infile.stem}.yml"
+        print(f"Preparing output from {filename}", end="\r")
         with open(outfile, "wt") as file:
             yaml.dump(data, file, sort_keys=False)
         print(f"Processed {filename} to {outfile.resolve()}")

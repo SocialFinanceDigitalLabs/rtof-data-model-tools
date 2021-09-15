@@ -96,11 +96,16 @@ class Parser:
                         else:
                             key_val = _pick_value(row_data, field=key.id, suffix=c['suffix'])
                             key_values.append(key_val)
-                            if key_val == "":
-                                c['empty_key'] = True
                     c['primary_key'] = key_values
                     del c['$field']
 
-                parsed_data += [r for r in row_data if not r.get('empty_key')]
+                by_key = {}
+                for d in row_data:
+                    by_key.setdefault((d['record'], *d['primary_key']), []).append(d)
+
+                for key, record_data in by_key.items():
+                    values = [r['value'] for r in record_data if r['value'] != ""]
+                    if len(values) > 0:
+                        parsed_data += record_data
 
         return parsed_data
