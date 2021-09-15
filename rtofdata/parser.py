@@ -98,11 +98,14 @@ for filename in input_files:
                         for fk in key.foreign_keys:
                             key_values.append(_pick_value(row_data, field=fk['field'], record=fk['record']))
                     else:
-                        key_values.append(_pick_value(row_data, field=key.id, suffix=c['suffix']))
+                        key_val = _pick_value(row_data, field=key.id, suffix=c['suffix'])
+                        key_values.append(key_val)
+                        if key_val == "":
+                            c['empty_key'] = True
                 c['primary_key'] = key_values
                 del c['$field']
 
-            parsed_data += row_data
+            parsed_data += [r for r in row_data if not r.get('empty_key')]
 
 print("Parse complete")
 with open(output_dir / "parsed_output.yaml", "wt") as file:
