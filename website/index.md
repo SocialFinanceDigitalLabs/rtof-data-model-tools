@@ -7,12 +7,11 @@ This document outlines the Refugee Outcomes Transition Fund (RTOF) Data Specific
 
 The document outlines the data fields, types, and descriptions for all required data collection during the lifetime of the Refugee Transition Outcome Fund. The description for each field outlines the context, collection frequency and milestone at which it should be collected.
 
-The validation rules that apply for each field are noted in the grey tables for each record. These will be applied on submission of data, if any validation rules are not met, a report will be produced with details of the fields and specified errors for the given fields.  The images below outline the key milestones and data collection points during the program.
+The validation rules that apply are noted under 'validators' for each record. These will be applied on submission of data, if any validation rules are not met, a validation report will be produced with details of the fields and specified errors for the given fields. The images below outline the key milestones and data collection points during the program.
 
 # Data Submissions
 
-Within each record page on this site we have included sample data, providing an example of how data submissions 
-should look. 
+Within each record page on this site we have included sample data, providing an example of how data submissions should look. 
 
 The RTOF datamodel is relational but does include many-to-one relationships that are not easily represented 
 in pure tabular formats without either duplicating rows or columns. For more information on how to represent 
