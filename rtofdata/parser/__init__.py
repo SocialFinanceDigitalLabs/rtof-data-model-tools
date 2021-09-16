@@ -32,14 +32,15 @@ def file_to_databook(filename: Path):
     if filename.suffix == ".csv":
         with open(filename, 'rt') as fh:
             dataset = tablib.Dataset().load(fh, format="csv")
-            databook = tablib.Databook([dataset])
+            return tablib.Databook([dataset])
     elif filename.suffix == ".xlsx":
         with open(filename, 'rb') as fh:
-            databook = tablib.Databook().load(fh, format="xlsx")
+            return tablib.Databook().load(fh, format="xlsx")
+    elif filename.suffix == ".xls":
+        with open(filename, 'rb') as fh:
+            return tablib.Databook().load(fh, format="xls")
     else:
         raise Exception(f"Unknown file type: {filename}")
-
-    return databook
 
 
 def file_to_digest(filename: Path):
