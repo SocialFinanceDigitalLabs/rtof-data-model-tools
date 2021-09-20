@@ -52,20 +52,21 @@ class Parser:
                 for c in row_data:
                     field = c['$field']
                     keys = [f for f in field.record.primary_keys]
-                    key_values = []
+                    key_values = {}
                     for key in keys:
                         if key.foreign_keys:
                             for fk in key.foreign_keys:
-                                key_values.append(pick_value(row_data, field=fk['field'], record=fk['record']))
+                                key_values[key.id] = pick_value(row_data, field=fk['field'], record=fk['record'])
                         else:
                             key_val = pick_value(row_data, field=key.id, suffix=c['suffix'])
-                            key_values.append(key_val)
+                            key_values[key.id] = key_val
                     c['primary_key'] = key_values
-                    del c['$field']
 
                 by_key = {}
                 for d in row_data:
-                    by_key.setdefault((d['record'], *d['primary_key']), []).append(d)
+                    if not d['$field'].field.primary_key:
+                        del d['$field']
+                        by_key.setdefault((d['record'], *d['primary_key']), []).append(d)
 
                 for key, record_data in by_key.items():
                     values = [r['value'] for r in record_data if r['value'] != ""]

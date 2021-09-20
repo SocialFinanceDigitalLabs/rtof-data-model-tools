@@ -14,28 +14,42 @@ and [GitHub Pages][ghp].
 The documentation generator uses [Poetry][poetry] for dependency management. Make sure you have poetry installed,
 then install the project dependencies:
 
-```
+```shell
 poetry install
 ```
 
 Once installed, you can either run the generator from the command line by typing:
 
-```
+```shell
 poetry run python main.py
 ```
 
 or you can launch VS Code with:
 
-```
+```shell
 poetry shell
 code .
+```
+
+## Unit Tests
+
+Unit tests can be found in [/test](./tests) and can be run from the project root with
+
+```shell
+poetry run python -m unittest discover 
+```
+
+Individual tests can also be run by specifying the module:
+
+```shell
+ poetry run python -m unittest tests.test_stream_insert
 ```
 
 ## Linting
 
 To check your codestyle, run:
 
-```
+```shell
 poetry run flake8
 ```
 
