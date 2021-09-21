@@ -72,6 +72,10 @@ class Record:
     def key_class(self) -> namedtuple:
         return namedtuple(humps.pascalize(f"{self.id}_key"), ['record'] + [k.id for k in self.primary_keys])
 
+    @property
+    def record_class(self) -> namedtuple:
+        return namedtuple(humps.pascalize(f"{self.id}_record"), [f.id for f in self.fields])
+
     def get_key(self, **kwargs):
         return self.key_class(record=self.id, **kwargs)
 

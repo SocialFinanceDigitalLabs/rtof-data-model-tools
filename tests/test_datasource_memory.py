@@ -23,18 +23,23 @@ class TestParserUtil(unittest.TestCase):
             self._gen_event("person", "gender", "Woman", unique_id="DP-14"),
         ]
 
-        ds = InMemoryDataSource()
+        ds = InMemoryDataSource(self.spec)
         for e in events:
             ds.update(e)
 
-        self.assertDictEqual(
-            dict(unique_id="DP-14", year_of_birth="1989", gender="Woman"),
-            ds.get_single_record("person", "DP-14")
+        expected_result = dict(unique_id="DP-14", year_of_birth="1989", gender="Woman")
+        actual_result = ds.get_single_record("person", "DP-14")._asdict()
+        self.assertEqual(
+            actual_result,
+            actual_result | expected_result
         )
 
         ds.update(self._gen_event("person", "gender", "Man", unique_id="DP-14"))
 
-        self.assertDictEqual(
-            dict(unique_id="DP-14", year_of_birth="1989", gender="Man"),
-            ds.get_single_record("person", "DP-14")
+        expected_result = dict(unique_id="DP-14", year_of_birth="1989", gender="Man")
+        actual_result = ds.get_single_record("person", "DP-14")._asdict()
+        self.assertEqual(
+            actual_result,
+            actual_result | expected_result
         )
+
