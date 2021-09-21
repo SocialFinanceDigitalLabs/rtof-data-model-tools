@@ -9,11 +9,11 @@ _ptn_field_id = re.compile(r"[^a-z0-9]")
 def pick_value(row_data, **kwargs):
     def _matches(c):
         for key, value in kwargs.items():
-            if c.get(key) != value:
+            if getattr(c, key) != value:
                 return False
         return True
 
-    matches = [c['value'] for c in row_data if _matches(c)]
+    matches = [c.value for c in row_data if _matches(c)]
     if len(matches) == 1:
         return matches[0]
     elif len(matches) == 0:

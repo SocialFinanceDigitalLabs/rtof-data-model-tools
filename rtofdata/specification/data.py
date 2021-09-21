@@ -1,6 +1,9 @@
 from collections import namedtuple
 from dataclasses import dataclass
 from typing import List, Any
+
+import humps
+
 FieldRecord = namedtuple("FieldRecord", ["field", "record", "flow"])
 
 
@@ -64,6 +67,13 @@ class Record:
     @property
     def foreign_keys(self) -> List[Field]:
         return [f for f in self.fields or [] if f.foreign_keys]
+
+    @property
+    def key_class(self) -> namedtuple:
+        return namedtuple(humps.pascalize(f"{self.id}_key"), ['record'] + [k.id for k in self.primary_keys])
+
+    def get_key(self, **kwargs):
+        return self.key_class(record=self.id, **kwargs)
 
     def field_by_id(self, id):
         return [r for r in self.fields if r.id == id][0]

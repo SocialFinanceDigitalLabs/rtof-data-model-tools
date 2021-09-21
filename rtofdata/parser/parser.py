@@ -1,8 +1,25 @@
+from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import List
+from typing import List, Any, Dict, Tuple
+
+import tablib
 
 from rtofdata.parser import fix_field_id, file_to_databook, file_to_digest, pick_value
-from rtofdata.specification.data import Specification
+from rtofdata.specification.data import Specification, Field, Record
+
+
+@dataclass
+class DataEvent:
+    field: str
+    record: str
+    value: Any
+    primary_key: Any = None
+    suffix: str = None
+    row: int = None
+    column: int = None
+    sheet: str = None
+    filename: str = None
+    file_sha512: str = None
 
 
 class Parser:
@@ -24,53 +41,103 @@ class Parser:
     def databook_to_events(self, databook, filename=None, digest=None):
         parsed_data = []
         for dataset in databook.sheets():
-            fields = [self.get_by_field_id(h) for h in dataset.headers]
-            for ix, f in enumerate(fields):
-                if f is None:
-                    print("Header not found:", dataset.headers[ix])
+            parsed_data += self.dataset_to_events(dataset, filename=filename, digest=digest)
+        return parsed_data
 
-            for row_ix, row in enumerate(dataset):
-                row_data = []
-                for ix, f in enumerate(fields):
-                    if f is not None:
-                        field, suffix = f
-                        entry = {
-                            "$field": field,
-                            "field": field.field.id,
-                            "record": field.record.id,
-                            "suffix": suffix,
-                            "value": row[ix],
-                            "sheet": dataset.title,
-                            "row": row_ix,
-                        }
-                        if filename:
-                            entry["filename"] = filename
-                        if digest:
-                            entry['file_sha512'] = digest
-                        row_data.append(entry)
+    def dataset_to_events(self, dataset: tablib.Dataset, filename=None, digest=None):
+        fields = [self.get_by_field_id(h) for h in dataset.headers]
+        for ix, f in enumerate(fields):
+            if f is None:
+                print("Header not found:", dataset.headers[ix])
 
-                for c in row_data:
-                    field = c['$field']
-                    keys = [f for f in field.record.primary_keys]
-                    key_values = {}
-                    for key in keys:
-                        if key.foreign_keys:
-                            for fk in key.foreign_keys:
-                                key_values[key.id] = pick_value(row_data, field=fk['field'], record=fk['record'])
-                        else:
-                            key_val = pick_value(row_data, field=key.id, suffix=c['suffix'])
-                            key_values[key.id] = key_val
-                    c['primary_key'] = key_values
+        parsed_data: List[DataEvent] = []
+        for row_ix, row in enumerate(dataset):
+            row_data = self.row_to_events(row_ix, row, fields, filename=filename, digest=digest)
+            row_data = self.filter_empty_suffixes(row_data)
 
-                by_key = {}
-                for d in row_data:
-                    if not d['$field'].field.primary_key:
-                        del d['$field']
-                        by_key.setdefault((d['record'], *d['primary_key']), []).append(d)
+            row_keys = self.keys_in_row(row_data)
 
-                for key, record_data in by_key.items():
-                    values = [r['value'] for r in record_data if r['value'] != ""]
-                    if len(values) > 0:
-                        parsed_data += record_data
+            row_data = self.add_pk_to_events(row_data, row_keys)
+
+            if not self.is_row_empty(row_data):
+                parsed_data += row_data
 
         return parsed_data
+
+    @staticmethod
+    def row_to_events(row_ix: int, row: List, fields: List, filename=None, digest=None, sheet=None):
+        """
+        Returns a list of 'raw' events as seen in the Row - these are not aware of other events in the row, but simply
+        processes column by column.
+        :return:
+        """
+        row_data: List[DataEvent] = []
+        for ix, f in enumerate(fields):
+            if f is None:  # We encountered an unknown field, so we skip column
+                continue
+
+            field_and_record, suffix = f
+            event = DataEvent(
+                field=field_and_record.field.id,
+                record=field_and_record.record.id,
+                value=row[ix],
+                suffix=suffix,
+                sheet=sheet,
+                row=row_ix,
+                column=ix,
+                filename=filename,
+                file_sha512=digest,
+            )
+            row_data.append(event)
+        return row_data
+
+    def keys_in_row(self, row_data) -> Dict[Tuple[str, str], Tuple]:
+        # To resolve primary keys for each column, we need to
+        # check if we have values for each record's keys
+        records_in_row = {(e.record, e.suffix): self.__spec.record_by_id(e.record) for e in row_data}
+        keys_in_row: Dict[Tuple[str, str], Tuple] = {}
+        for (record_id, suffix), record in records_in_row.items():
+            key_values = {}
+            for key in record.primary_keys:
+                if key.foreign_keys:
+                    for fk in key.foreign_keys:
+                        key_values[key.id] = pick_value(row_data, field=fk['field'], record=fk['record'])
+                else:
+                    key_val = pick_value(row_data, field=key.id, suffix=suffix)
+                    key_values[key.id] = key_val
+
+            keys_in_row[(record_id, suffix)] = record.get_key(**key_values)
+        return keys_in_row
+
+    def add_pk_to_events(self, row_data, keys_in_row):
+        row_data = [DataEvent(**asdict(e)) for e in row_data]
+        for event in row_data:
+            record = self.__spec.record_by_id(event.record)
+            field = record.field_by_id(event.field)
+            if not field.primary_key:
+                event.primary_key = keys_in_row[(event.record, event.suffix)]
+
+        return [e for e in row_data if e.primary_key]
+
+    @staticmethod
+    def is_row_empty(row_data: List[DataEvent]):
+        row_values = [e.value for e in row_data if e.value != '']
+        return len(row_values) == 0
+
+    @staticmethod
+    def filter_empty_suffixes(row_data: List[DataEvent]):
+        group_by_suffix = {}
+        for event in row_data:
+            group_by_suffix.setdefault(event.suffix, []).append(event)
+
+        values_by_suffix = {suffix: [e.value for e in events] for suffix, events in group_by_suffix.items()}
+        values_by_suffix = {suffix: "".join(values) for suffix, values in values_by_suffix.items()}
+
+        # We do it this way to preserve the order of events
+        filtered_values = list(row_data)
+        for suffix, value in values_by_suffix.items():
+            if len(value) == 0:
+                for v in group_by_suffix[suffix]:
+                    filtered_values.remove(v)
+
+        return filtered_values

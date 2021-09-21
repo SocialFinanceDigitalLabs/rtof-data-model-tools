@@ -3,6 +3,12 @@ from pathlib import Path
 from rtofdata.parser import pick_value, fix_field_id, file_to_databook, Parser
 from rtofdata.specification.parser import parse_specification
 
+class _MyClass:
+
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
 
 class TestParserUtil(unittest.TestCase):
 
@@ -13,10 +19,10 @@ class TestParserUtil(unittest.TestCase):
 
     def test_pick_value(self):
         data = [
-            dict(a=1, b=1, value='a'),
-            dict(a=1, b=2, value='b'),
-            dict(a=3, b=3, value='c'),
-            dict(a=4, b=3, value='d'),
+            _MyClass(a=1, b=1, value='a'),
+            _MyClass(a=1, b=2, value='b'),
+            _MyClass(a=3, b=3, value='c'),
+            _MyClass(a=4, b=3, value='d'),
         ]
 
         self.assertEqual(pick_value(data, a=3), 'c')

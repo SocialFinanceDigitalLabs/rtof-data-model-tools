@@ -1,4 +1,5 @@
 import argparse
+from dataclasses import asdict
 from pathlib import Path
 
 import yaml
@@ -6,6 +7,18 @@ import yaml
 from rtofdata.config import output_dir as conf_output_dir
 from rtofdata.parser import Parser
 from rtofdata.specification.parser import parse_specification
+
+
+def dict_factory(obj):
+    my_dict = {}
+    for (k, v) in obj:
+        if v is None:
+            continue
+        if hasattr(v, "_make"):
+            v = v._asdict()
+            del v['record']
+        my_dict[k] = v
+    return my_dict
 
 
 def main(input_files, output_dir=None):
@@ -27,7 +40,7 @@ def main(input_files, output_dir=None):
         outfile = output_dir / f"{infile.stem}.yml"
         print(f"Preparing output from {filename}", end="\r")
         with open(outfile, "wt") as file:
-            yaml.dump(data, file, sort_keys=False)
+            yaml.dump([asdict(d, dict_factory=dict_factory) for d in data], file, sort_keys=False)
         print(f"Processed {filename} to {outfile.resolve()}")
 
 
