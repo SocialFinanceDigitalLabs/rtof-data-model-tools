@@ -12,4 +12,21 @@ The MS Teams site gives access to four key folders:
  1. **Submissions** - drop all data files to be submitted here 
  2. **Reports** - view all reports on previous uploads here  
  3. **Data** - view the current 'live' dataset 
- 4. **Achive** - All previous datasets  
+ 4. **Archive** - All previous datasets  
+
+# Basic principles of uploads
+
+* All providers will need to capture their data using the common data model outlined in record tab of this webpage.
+ 
+* All data submissions will be on an individual level, not aggregates.
+ 
+* Data submission uploads to the system must occur on a monthly basis, following the schedule outlined by Palladium.
+
+# Proposed data upload schedule
+
+Data can be submitted into the system at any time during the month. 
+
+Palladium have outlined that all data collected, that relates to the previous month, must be submitted into the system by 14th day of the following month. 
+
+On the 14th day of the month, the submitted data will become available for all other stakeholders to download - enabling performance management, evaluation and learning aspects of the fund to be delivered. 
+
