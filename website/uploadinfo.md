@@ -6,14 +6,14 @@ title: Data submissions into the Shared Data System
 # Using the Shared Data System
 This page explains the system that has been created to allow providers to submit, validate and download data. 
 
-The system is hosted through individual MS Teams sites. Each provider that requires the ability to upload and download data will be provided an MS Teams site, with access given to those that require the ability to upload and download data. Access requests for log-in details must be approved by the Home Office.
+The system is hosted through individual MS Teams sites. Each provider that requires the ability to upload and download data will be provided an MS Teams site, with access given to those that need it. Access requests for log-in details must be approved by the Home Office.
 
 The MS Teams site gives access to four key folders:
 
-### 1. Submissions - *drop all data files to be submitted here* 
-### 2  Reports - *view all reports on previous uploads here*  
-### 3. Data - *view the current 'live' dataset*
-### 4. Archive - *view all previous datasets*  
+### 1. Upload - *drop all data files to be submitted here* 
+### 2  Reports - *view all validation reports on previous uploads here*  
+### 3. Data - *view the current 'live' dataset here*
+### 4. Archive - *view all previous datasets here*  
 
 # Basic principles of uploads
 
