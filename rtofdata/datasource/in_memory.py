@@ -1,8 +1,9 @@
+from rtofdata.datasource import DataSource
 from rtofdata.parser.parser import DataEvent
 from rtofdata.specification.data import Specification
 
 
-class InMemoryDataSource:
+class InMemoryDataSource(DataSource):
 
     def __init__(self, spec: Specification):
         self.datastore = {}
@@ -31,10 +32,10 @@ class InMemoryDataSource:
         self.datastore.setdefault(record_id, {})[key] = value = record_class(**record_values)
         return value
 
-    def get_records_by_type(self, record):
+    def get_records_by_type(self, record: str):
         return self.datastore.get(record)
 
-    def get_single_record(self, record, *keys):
+    def get_single_record(self, record: str, *keys):
         records = self.get_records_by_type(record)
         if not records:
             return None

@@ -6,6 +6,7 @@ import tablib
 
 from rtofdata.parser import fix_field_id, file_to_databook, file_to_digest, pick_value
 from rtofdata.specification.data import Specification, Field, Record
+from rtofdata.util.error_handler import ErrorEvent
 
 
 @dataclass
@@ -23,9 +24,13 @@ class DataEvent:
 
 
 class Parser:
-    def __init__(self, spec: Specification):
+    def __init__(self, spec: Specification, error_handler = None):
         self.__spec = spec
         self.__all_fields = [(fix_field_id(f.field.id), f) for f in spec.fields if not f.field.foreign_keys]
+        if error_handler:
+            self.error_handler = error_handler
+        else:
+            self.error_handler = lambda x: print(x)
 
     def parse_file(self, filename: Path) -> List:
         databook = file_to_databook(filename)
@@ -48,7 +53,8 @@ class Parser:
         fields = [self.get_by_field_id(h) for h in dataset.headers]
         for ix, f in enumerate(fields):
             if f is None:
-                print("Header not found:", dataset.headers[ix])
+                self.error_handler(ErrorEvent(message=f"Header not found {dataset.headers[ix]}",
+                                              filename=filename, digest=digest))
 
         parsed_data: List[DataEvent] = []
         for row_ix, row in enumerate(dataset):
@@ -131,7 +137,7 @@ class Parser:
             group_by_suffix.setdefault(event.suffix, []).append(event)
 
         values_by_suffix = {suffix: [e.value for e in events] for suffix, events in group_by_suffix.items()}
-        values_by_suffix = {suffix: "".join(values) for suffix, values in values_by_suffix.items()}
+        values_by_suffix = {suffix: "".join([str(v) for v in values]) for suffix, values in values_by_suffix.items()}
 
         # We do it this way to preserve the order of events
         filtered_values = list(row_data)

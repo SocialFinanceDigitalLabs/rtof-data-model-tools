@@ -1,0 +1,3 @@
+
+class ErrorEvent(dict):
+    pass
