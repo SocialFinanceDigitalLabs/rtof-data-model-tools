@@ -9,10 +9,11 @@ This page explains the system that has been created to allow providers to submit
 The system is hosted through individual MS Teams sites. Each provider that requires the ability to upload and download data will be provided an MS Teams site, with access given to those that require the ability to upload and download data. Access requests for log-in details must be approved by the Home Office.
 
 The MS Teams site gives access to four key folders:
- 1. ### Submissions - drop all data files to be submitted here 
- 2. ### Reports - view all reports on previous uploads here  
- 3. ### Data - view the current 'live' dataset 
- 4. ### Archive - All previous datasets  
+
+### 1. Submissions - *drop all data files to be submitted here* 
+### 2  Reports - *view all reports on previous uploads here*  
+### 3. Data - *view the current 'live' dataset*
+### 4. Archive - *view all previous datasets*  
 
 # Basic principles of uploads
 
