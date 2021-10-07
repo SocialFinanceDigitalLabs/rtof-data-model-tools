@@ -4,9 +4,13 @@ from rtofdata.validation.validators import get_validator, ValidationException
 
 class Validator:
 
-    def __init__(self, spec, datasource):
+    def __init__(self, spec, datasource, error_handler=None):
         self.spec = spec
         self.datasource = datasource
+        if error_handler:
+            self.error_handler = error_handler
+        else:
+            self.error_handler = lambda x: print(x)
 
         validator = self
 
@@ -44,7 +48,6 @@ class Validator:
         validation_func(context, field_value, validator_conf['args'])
 
     def validate_all(self):
-        validation_errors = []
         for record_spec in self.spec.records:
             for record_pk in self.datasource.get_records_by_type(record_spec.id):
                 for field_spec in record_spec.fields:
@@ -52,11 +55,11 @@ class Validator:
                         try:
                             self.validate(validator_conf, record_spec.id, field_spec.id, record_pk)
                         except ValidationException as e:
-                            validation_errors.append(ErrorEvent(record_id=record_spec.id,
-                                                                record_pk=record_pk,
-                                                                message=str(e),
-                                                                field_id=field_spec.id,
-                                                                ))
+                            self.error_handler(ErrorEvent(
+                                message=str(e),
+                                record_id=record_spec.id,
+                                record_pk=record_pk,
+                                field_id=field_spec.id,
+                                validator=validator_conf['id'],
+                            ))
 
-        for error in validation_errors:
-            print(error)

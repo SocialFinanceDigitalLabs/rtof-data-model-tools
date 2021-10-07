@@ -2,6 +2,7 @@ from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import List, Any, Dict, Tuple
 
+import dateutil.parser
 import tablib
 
 from rtofdata.parser import fix_field_id, file_to_databook, file_to_digest, pick_value
@@ -81,12 +82,17 @@ class Parser:
         for ix, f in enumerate(fields):
             if f is None:  # We encountered an unknown field, so we skip column
                 continue
-
             field_and_record, suffix = f
+
+            value = row[ix]
+            field_type = field_and_record.field.type
+            if field_type.id == "date" and isinstance(value, str):
+                value = dateutil.parser.isoparse(value)
+
             event = DataEvent(
                 field=field_and_record.field.id,
                 record=field_and_record.record.id,
-                value=row[ix],
+                value=value,
                 suffix=suffix,
                 sheet=sheet,
                 row=row_ix,
