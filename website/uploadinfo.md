@@ -15,20 +15,33 @@ The MS Teams site gives access to four key folders:
 ### 3. Data - *view the current 'live' dataset here*
 ### 4. Archive - *view all previous datasets here*  
 
-# Basic principles of uploads
 
-* All providers will need to capture their data using the common data model outlined in [record tab]({{ '/Records' | relative_url }}) of this webpage.
-* All data submissions will be on an individual level, not aggregates.
-* Data submission uploads to the system must occur on a monthly basis, following the schedule outlined by Palladium, see below for details. 
+# Shared Data System Reporting Requirements 
+**All providers will need to capture data using the common data model**
 
+> The common data model outlines all data fields which are required for submission at set milestones during the RTOF intervention. Each data field includes a description of what should be collected, the format the data should be in, the dimensions for given fields and the relevant validators. 
 
-# Proposed data upload schedule
+> The common data model specification can be found at - https://sfdl.org.uk/RTOF-specification/records 
 
-Data can be submitted into the system at any time during the month. 
+> The system will test any submission against this common data model and ensure adherence to validation requirements 
 
-Palladium have outlined that all data collected, that relates to the previous month, must be submitted into the system by 14th day of the following month. 
+**All data submissions will need to be on an individual level, not aggregates.**
 
-On the 14th day of the month, the submitted data will become available for all other stakeholders to download,  enabling performance management, evaluation and learning aspects of the fund to be delivered.
+> All participants who enter onto the RTOF program must be allocated a unique ID. This unique ID must remain constant throughout their engagement, and included in each data submission.  
+
+**Data submission uploads to the SDS must occur on a monthly basis**
+
+> Data can be submitted into the system at any time during the month
+
+> All collected data relating to the previous month, must be submitted into the system by the 14th day of the following month (e.g. data referring to 1st January > 30th January, must be submitted by 14th February) 
+
+> On the 14th day of the month, the submitted data will become available for all other stakeholders to download, enabling performance management, evaluation and the learning aspect of the fund to be delivered to support providers
+
+**All providers will be administered a MS Teams site to upload and download data**
+> The Teams site will provide all functionalities required to upload, validate and download data for the shared data system 
+
+> Each provider that requires the ability to upload, validate and download data will be provided an MS Teams site, with access given to those that require it. Access requests for log-in details must be approved by the Home Office. 
+
 
 
 
