@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import date, datetime
+import re
 from types import ModuleType
 
 
@@ -41,13 +42,9 @@ def date_after(context, field_value, field_id):
         raise ValidationException(f"{other_value} is not set")
 
     if not isinstance(other_value, datetime):
-        mon_year = datetime.strptime(str(other_value), '%Y-%m')
-        if not isinstance (mon_year, datetime):
-
+        
+            
             raise ValidationException(f"{other_value} is not a date")
-
-        datetime.strptime(other_value, '%Y-%m')
-
     if field_value <= other_value:
         raise ValidationException(f"{field_value} is not larger than {other_value}")
 
@@ -56,7 +53,7 @@ def character_limit(context, field_value, enabled):
         if enabled: 
             field_value = str(field_value)
             if len(field_value) > 255:
-                print("255 character limit exceeded")
+                raise ValidationException ("255 character limit exceeded")
         else:
             pass 
 
@@ -68,13 +65,18 @@ def dimension(context, field_value, enabled):
 def count_min(context, field_value, enabled):
     if enabled:
         len(field_value) < 3
-        print("The number of occurances in this list is below the required number")
+        raise ValidationException ("The number of occurances in this list is below the required number")
     else :
         pass
 
 
 def national_insurance_number(context, field_value, enabled):
-    pass
+    if enabled:
+        NINO = re.compile('^[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1}[0-9]{6}[A-DFM]{0,1}$')
+        field_value != NINO.match(str(field_value))
+        raise ValidationException ("The National Insurance number is not in the correct format")
+    else:
+        pass
 
 
 def conditional(context, field_value, enabled):
