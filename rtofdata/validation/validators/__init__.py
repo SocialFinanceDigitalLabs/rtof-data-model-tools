@@ -72,9 +72,9 @@ def count_min(context, field_value, enabled):
 
 def national_insurance_number(context, field_value, enabled):
     if enabled:
-        NINO = re.compile('^[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1}[0-9]{6}[A-DFM]{0,1}$')
-        field_value != NINO.match(str(field_value))
-        raise ValidationException ("The National Insurance number is not in the correct format")
+        NINO = bool(re.search('^[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1}[0-9]{6}[A-DFM]{0,1}$', str(field_value)))
+        if NINO != True: 
+            raise ValidationException ("The National Insurance number is not in the correct format")
     else:
         pass
 
