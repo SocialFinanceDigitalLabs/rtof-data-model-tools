@@ -41,7 +41,7 @@ def date_after(context, field_value, field_id):
     if other_value is None:
         raise ValidationException(f"{other_value} is not set")
 
-    if not isinstance(other_value, datetime):
+    if not isinstance(other_value, datetime) or isinstance(other_value, datetime('%Y-%m')):         
         raise ValidationException(f"{other_value} is not a date")
 
     if field_value <= other_value:
