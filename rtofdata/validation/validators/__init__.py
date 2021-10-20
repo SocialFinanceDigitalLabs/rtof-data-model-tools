@@ -49,7 +49,10 @@ def date_after(context, field_value, field_id):
 
 
 def character_limit(context, field_value, enabled):
-    pass
+    if enabled and len(field_value) > 255:
+        print("You have exceeded the maximum character limit of 255")
+    else: 
+        pass 
 
 
 def dimension(context, field_value, enabled):
