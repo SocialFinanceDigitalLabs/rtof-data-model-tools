@@ -24,7 +24,6 @@ def required(context, field_value, enabled):
 def unique(context, field_value, enabled):
     pass
 
-
 def date_after(context, field_value, field_id):
     if not field_value:
         return
@@ -41,18 +40,25 @@ def date_after(context, field_value, field_id):
     if other_value is None:
         raise ValidationException(f"{other_value} is not set")
 
-    if not isinstance(other_value, datetime) or isinstance(other_value, datetime('%Y-%m')):         
-        raise ValidationException(f"{other_value} is not a date")
+    if not isinstance(other_value, datetime):
+        mon_year = datetime.strptime(str(other_value), '%Y-%m')
+        if not isinstance (mon_year, datetime):
+
+            raise ValidationException(f"{other_value} is not a date")
+
+        datetime.strptime(other_value, '%Y-%m')
 
     if field_value <= other_value:
         raise ValidationException(f"{field_value} is not larger than {other_value}")
 
 
 def character_limit(context, field_value, enabled):
-    if enabled and len(field_value) > 255:
-        print("You have exceeded the maximum character limit of 255")
-    else: 
-        pass 
+        if enabled: 
+            field_value = str(field_value)
+            if len(field_value) > 255:
+                print("255 character limit exceeded")
+        else:
+            pass 
 
 
 def dimension(context, field_value, enabled):
@@ -60,7 +66,11 @@ def dimension(context, field_value, enabled):
 
 
 def count_min(context, field_value, enabled):
-    pass
+    if enabled:
+        len(field_value) < 3
+        print("The number of occurances in this list is below the required number")
+    else :
+        pass
 
 
 def national_insurance_number(context, field_value, enabled):
