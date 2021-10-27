@@ -7,7 +7,7 @@ import tablib
 
 from rtofdata.parser import fix_field_id, file_to_databook, file_to_digest, pick_value
 from rtofdata.specification.data import Specification, Field, Record
-from rtofdata.util.error_handler import ErrorEvent
+from rtofdata.util.error_handler import ErrorEvent, print_error_handler as default_error_handler
 
 
 @dataclass
@@ -23,20 +23,19 @@ class DataEvent:
     filename: str = None
     file_sha512: str = None
 
+def default_error_handler(event: ErrorEvent):
+    print(event)
+
 
 class Parser:
-    def __init__(self, spec: Specification, error_handler = None):
+    def __init__(self, spec: Specification):
         self.__spec = spec
         self.__all_fields = [(fix_field_id(f.field.id), f) for f in spec.fields if not f.field.foreign_keys]
-        if error_handler:
-            self.error_handler = error_handler
-        else:
-            self.error_handler = lambda x: print(x)
 
-    def parse_file(self, filename: Path) -> List:
+    def parse_file(self, filename: Path, error_handler=None) -> List:
         databook = file_to_databook(filename)
         digest = file_to_digest(filename)
-        return self.databook_to_events(databook, filename=filename.name, digest=digest)
+        return self.databook_to_events(databook, filename=filename.name, digest=digest, error_handler=error_handler)
 
     def get_by_field_id(self, field_id):
         field_id = fix_field_id(field_id)
@@ -44,18 +43,23 @@ class Parser:
             if field_id.startswith(fid):
                 return field, field_id[len(fid):]
 
-    def databook_to_events(self, databook, filename=None, digest=None):
+    def databook_to_events(self, databook, filename=None, digest=None, error_handler=None):
         parsed_data = []
         for dataset in databook.sheets():
-            parsed_data += self.dataset_to_events(dataset, filename=filename, digest=digest)
+            parsed_data += self.dataset_to_events(dataset, filename=filename, digest=digest, error_handler=error_handler)
         return parsed_data
 
-    def dataset_to_events(self, dataset: tablib.Dataset, filename=None, digest=None):
+    def dataset_to_events(self, dataset: tablib.Dataset, filename=None, digest=None, error_handler=None):
+        if error_handler is None:
+            error_handler = default_error_handler
         fields = [self.get_by_field_id(h) for h in dataset.headers]
         for ix, f in enumerate(fields):
             if f is None:
-                self.error_handler(ErrorEvent(message=f"Header not found {dataset.headers[ix]}",
-                                              filename=filename, digest=digest))
+                error_handler(ErrorEvent(
+                    message=f"Header not found {dataset.headers[ix]}",
+                    filename=filename,
+                    digest=digest
+                ))
 
         parsed_data: List[DataEvent] = []
         for row_ix, row in enumerate(dataset):

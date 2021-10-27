@@ -1,4 +1,4 @@
-from rtofdata.util.error_handler import ErrorEvent
+from rtofdata.util.error_handler import ErrorEvent, print_error_handler as default_error_handler
 from rtofdata.validation.validators import get_validator, ValidationException
 
 
@@ -47,7 +47,10 @@ class Validator:
         validation_func = get_validator(validator_id)
         validation_func(context, field_value, validator_conf['args'])
 
-    def validate_all(self):
+    def validate_all(self, error_handler=None):
+        if error_handler is None:
+            error_handler = default_error_handler
+
         for record_spec in self.spec.records:
             for record_pk in self.datasource.get_records_by_type(record_spec.id):
                 for field_spec in record_spec.fields:
@@ -55,7 +58,7 @@ class Validator:
                         try:
                             self.validate(validator_conf, record_spec.id, field_spec.id, record_pk)
                         except ValidationException as e:
-                            self.error_handler(ErrorEvent(
+                            error_handler(ErrorEvent(
                                 message=str(e),
                                 record_id=record_spec.id,
                                 record_pk=record_pk,
