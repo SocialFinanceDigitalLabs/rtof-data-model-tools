@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import List, Any, Dict, Tuple
+from typing import List, Any, Dict, Tuple, Union
 
 import dateutil.parser
 import tablib
@@ -23,6 +23,7 @@ class DataEvent:
     filename: str = None
     file_sha512: str = None
 
+
 def default_error_handler(event: ErrorEvent):
     print(event)
 
@@ -37,8 +38,10 @@ class Parser:
         digest = file_to_digest(filename)
         return self.databook_to_events(databook, filename=filename.name, digest=digest, error_handler=error_handler)
 
-    def get_by_field_id(self, field_id):
+    def get_by_field_id(self, field_id) -> Union[Tuple[Field, str], None]:
         field_id = fix_field_id(field_id)
+        if field_id is None:
+            return None
         for fid, field in self.__all_fields:
             if field_id.startswith(fid):
                 return field, field_id[len(fid):]
