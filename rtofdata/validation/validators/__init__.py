@@ -63,9 +63,8 @@ def dimension(context, field_value, enabled):
 
 
 def count_min(context, field_value, enabled):
-    if enabled:
-        len(field_value) < 3
-        raise ValidationException ("The number of occurances in this list is below the required number")
+    if enabled and len(field_value) < 3:
+        raise ValidationException ("Must have at least 3 values")
     else :
         pass
 
