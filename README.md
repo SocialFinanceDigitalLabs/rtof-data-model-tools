@@ -6,6 +6,14 @@ This is the source repository for the RTOF data model tools for generating diffe
 There are a number of different modules involved with parsing and validating the specification,
 compiling the documentation website and associated outputs, creating sample data and file validators.
 
+The repositories are:
+
+1. [Data Model][rtof-spec]
+2. [Data Model Tools][rtof-tools] (this repo)
+
+The [Data Model][rtof-data-model] contains the actual data specification that is used by the tools
+to validate and transform any received data.
+
 The tools are mostly written in Python, and the [website][rtof-web] is powered by [Jekyll][jekyll]
 and [GitHub Pages][ghp].
 
@@ -36,7 +44,7 @@ code .
 Unit tests can be found in [/test](./tests) and can be run from the project root with
 
 ```shell
-poetry run python -m unittest discover 
+poetry run python -m unittest discover
 ```
 
 Individual tests can also be run by specifying the module:
@@ -80,18 +88,18 @@ to produce the website. The Jekyll configuration can be found in [website](./web
 
 So far this documentation has discussed the "core" data model but not really discussed representation and
 information exchange. To make the transfer of data from providers to the central reporting function as streamlined
-as possible, provide a number of transfer formats that can be used for upload and reporting. 
+as possible, provide a number of transfer formats that can be used for upload and reporting.
 
 The most commonly used data interchange formats in this sector are Excel (xlsx), CSV, JSON and XML. Excel and CSV
-are tabular formats, whilst JSON and XML are hierarchical. We will therefore focus on these two abstract 
+are tabular formats, whilst JSON and XML are hierarchical. We will therefore focus on these two abstract
 representations.
 
-The core datamodel is relational but does include many-to-one relationships that are not easily represented in 
-pure tabular formats without either duplicating rows or columns. 
+The core datamodel is relational but does include many-to-one relationships that are not easily represented in
+pure tabular formats without either duplicating rows or columns.
 
 So for tabular formats, records may be provided either one-by-one (separate file / worksheet for each type) or as a
-long format. All column names are unique, so if column names from multiple record types appear in the same file, 
-then all records will be added / updated. Omitted records will retain their previous values if they already existed. 
+long format. All column names are unique, so if column names from multiple record types appear in the same file,
+then all records will be added / updated. Omitted records will retain their previous values if they already existed.
 
 For many-to-one relationship, columns can contain a suffix, e.g. `integration_outcome_type_1`. All columns
 belonging to that record must have the same suffix, i.e.:
@@ -99,14 +107,28 @@ belonging to that record must have the same suffix, i.e.:
 * integration_outcome_type_1
 * integration_outcome_achieved_date_1
 
-etc. 
+etc.
 
-Alternatively, multiple rows can be provided, one for each record. 
+Alternatively, multiple rows can be provided, one for each record.
+
+
+## Releasing this project
+
+Published releases of this project are hosted on [PyPI][pypi-rtofdata].
+
+To build and release a new version, make sure all your unit tests pass.
+
+We use [semantic versioning][semver], so update the project version in [pyproject.toml](./pyproject.toml) accordingly
+and commit, creating a PR. Once the release version is on GitHub, create a GitHub release naming the release with the
+current release name, e.g. 1.0 and the tag with the release name prefixed with a v, i.e. v1.0. Alpha and beta releases
+can be flagged by appending `-alpha.<number>` and `-beta.<number>`.
 
 
 [rtof-spec]: https://github.com/SocialFinanceDigitalLabs/rtof-data-model
 [rtof-tools]: https://github.com/SocialFinanceDigitalLabs/rtof-data-model-tools
 [rtof-web]: https://sfdl.org.uk/RTOF-specification/
+[pypi-rtofdata]: https://pypi.org/project/rtofdata/
+
 
 [poetry]: https://python-poetry.org/
 [yaml]: https://yaml.org/
@@ -121,3 +143,4 @@ Alternatively, multiple rows can be provided, one for each record.
 [jekyll]: https://jekyllrb.com/
 [gha]: https://github.com/features/actions
 [ghp]: https://pages.github.com/
+[semver]: https://semver.org/
