@@ -5,8 +5,11 @@ from rtofdata.parser.parser import DataEvent
 from rtofdata.specification.parser import parse_specification
 
 
+@unittest.skip("This is not a unit test as it is dependent on the specification existing and being loaded")
 class TestParserUtil(unittest.TestCase):
-    spec = parse_specification()
+
+    def setUp(self):
+        self.spec = parse_specification()
 
     def _gen_event(self, record_id, field_id, value, **primary_keys):
         pk = self.spec.record_by_id(record_id).get_key(**primary_keys)
@@ -42,4 +45,3 @@ class TestParserUtil(unittest.TestCase):
             actual_result,
             actual_result | expected_result
         )
-
