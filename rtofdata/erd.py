@@ -3,7 +3,7 @@ from pathlib import Path
 import graphviz
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from rtofdata.config import output_dir, template_dir
+from rtofdata.util.config import output_dir, template_dir
 from rtofdata.specification.data import Specification
 
 

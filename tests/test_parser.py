@@ -1,13 +1,10 @@
 import tablib
 
 from rtofdata.parser import Parser
-from rtofdata.specification.parser import parse_specification
 
 
-def test_null_headers():
-    spec = parse_specification()
-
-    parser = Parser(spec)
+def test_null_headers(specification):
+    parser = Parser(specification)
 
     data = tablib.Dataset(*[
         ['A', 'User', 'M', 'Test', 'Random'],

@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 import yaml
 
-from rtofdata.config import jekyll_dir, output_dir, assets_dir as src_assets
+from rtofdata.util.config import jekyll_dir, output_dir, assets_dir as src_assets
 from rtofdata.fake.faker import create_all_data
 from rtofdata.specification.data import Specification
 from rtofdata.word import get_git_data

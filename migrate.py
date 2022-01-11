@@ -5,7 +5,7 @@ from itertools import zip_longest
 
 import yaml
 
-from rtofdata.config import data_dir
+from rtofdata.util.config import data_dir
 from rtofdata.excel import read_excel
 
 

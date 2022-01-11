@@ -4,7 +4,7 @@ import yaml
 from faker import Faker
 from tqdm import trange
 
-from rtofdata.config import template_dir
+from rtofdata.util.config import template_dir
 from rtofdata.fake import generators
 from rtofdata.fake.generators import get_date_or_delta
 from rtofdata.specification.parser import parse_specification

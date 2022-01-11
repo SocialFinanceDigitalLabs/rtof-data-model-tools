@@ -7,7 +7,7 @@ from rtofdata.fake.faker import create_all_data
 from rtofdata.fake.serialization import dataset_to_tablib
 from rtofdata.fake.sql import create_schema, insert_into_database, database_to_wide
 from rtofdata.specification.parser import parse_specification
-from rtofdata.config import output_dir
+from rtofdata.util.config import output_dir
 
 
 def write_samples(
