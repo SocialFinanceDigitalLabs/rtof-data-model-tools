@@ -3,12 +3,12 @@ from typing import List
 from dacite import from_dict
 import traceback
 import yaml
-from rtofdata.config import data_dir
+from rtofdata import config
 from rtofdata.specification import data as rtofdata
 
 
 def parse_dimensions():
-    category_file_list = (data_dir / "categories").glob("*.yml")
+    category_file_list = (config.data_dir / "categories").glob("*.yml")
 
     all_categories = []
     for category_file in category_file_list:
@@ -42,7 +42,7 @@ def parse_records(datatypes, categories, validators):
     datatypes = {c.id: c for c in datatypes}
     validators = {c.id: c for c in validators}
 
-    record_file_list = (data_dir / "records").glob("*.yml")
+    record_file_list = (config.data_dir / "records").glob("*.yml")
 
     record_list = []
     record_errors = []
@@ -99,7 +99,7 @@ def parse_records(datatypes, categories, validators):
 
 def parse_flow(records: List[rtofdata.Record]):
     records = {r.id: r for r in records}
-    with open(data_dir / "workflow.yml", 'rt') as file:
+    with open(config.data_dir / "workflow.yml", 'rt') as file:
         data = yaml.safe_load(file)
 
     flows = []
@@ -113,7 +113,7 @@ def parse_flow(records: List[rtofdata.Record]):
 
 
 def parse_validators():
-    with open(data_dir / "validators.yml", 'rt') as file:
+    with open(config.data_dir / "validators.yml", 'rt') as file:
         data = yaml.safe_load(file)
 
     validators = []
@@ -123,7 +123,7 @@ def parse_validators():
 
 
 def parse_datatypes():
-    with open(data_dir / "datatypes.yml", 'rt') as file:
+    with open(config.data_dir / "datatypes.yml", 'rt') as file:
         data = yaml.safe_load(file)
 
     datatypes = []

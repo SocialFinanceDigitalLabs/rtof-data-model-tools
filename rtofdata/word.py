@@ -6,7 +6,7 @@ from docxtpl import DocxTemplate, InlineImage
 
 import git
 
-from rtofdata.config import assets_dir, data_dir, output_dir, template_dir
+from rtofdata.util.config import assets_dir, data_dir, output_dir, template_dir
 from rtofdata.specification.data import Specification
 
 

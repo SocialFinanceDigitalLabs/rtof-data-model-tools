@@ -63,13 +63,14 @@ def dimension(context, field_value, enabled):
 
 
 def count_min(context, field_value, enabled):
-    if field_value is None:
-            pass
-        else:
-            if enabled and len(field_value) < 3:
-                raise ValidationException ("Must have at least 3 values")
-            else :
-                pass
+    pass
+    # if field_value is None:
+    #         pass
+    #     else:
+    #         if enabled and len(field_value) < 3:
+    #             raise ValidationException ("Must have at least 3 values")
+    #         else :
+    #             pass
 
 
 def national_insurance_number(context, field_value, enabled):

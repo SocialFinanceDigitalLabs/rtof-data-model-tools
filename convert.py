@@ -4,7 +4,7 @@ import argparse
 
 from jinja2 import Environment, select_autoescape, FileSystemLoader
 
-from rtofdata.config import assets_dir, output_dir
+from rtofdata.util.config import assets_dir, output_dir
 from rtofdata.specification.spec_parser import parse_specification
 from rtofdata.word import create_context
 

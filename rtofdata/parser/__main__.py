@@ -4,7 +4,7 @@ from pathlib import Path
 
 import yaml
 
-from rtofdata.config import output_dir as conf_output_dir
+from rtofdata.util.config import output_dir as conf_output_dir
 from rtofdata.parser import Parser
 from rtofdata.specification.parser import parse_specification
 
