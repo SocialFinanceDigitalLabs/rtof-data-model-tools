@@ -41,3 +41,6 @@ class InMemoryDataSource(DataSource):
             return None
 
         return records.get(keys)
+
+    def __len__(self):
+        return sum(len(records) for records in self.datastore.values())
