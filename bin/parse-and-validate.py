@@ -4,7 +4,6 @@ from datetime import datetime
 from random import SystemRandom
 
 from pytz import timezone
-from time import strftime
 
 import tablib
 from sqlalchemy import create_engine
@@ -44,7 +43,7 @@ def main(team_channel_folder, export_database=False):
 
     spec = parse_specification()
 
-    parser = Parser(spec, error_handler=error_handler)
+    parser = Parser(spec)
     datasource = InMemoryDataSource(spec)
 
     files_to_process = []

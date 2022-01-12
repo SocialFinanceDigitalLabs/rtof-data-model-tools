@@ -52,7 +52,7 @@ class Validator:
             error_handler = default_error_handler
 
         for record_spec in self.spec.records:
-            for record_pk in self.datasource.get_records_by_type(record_spec.id):
+            for record_pk in self.datasource.get_records_by_type(record_spec.id) or []:
                 for field_spec in record_spec.fields:
                     for validator_conf in field_spec.validation:
                         try:

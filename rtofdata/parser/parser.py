@@ -24,10 +24,6 @@ class DataEvent:
     file_sha512: str = None
 
 
-def default_error_handler(event: ErrorEvent):
-    print(event)
-
-
 class Parser:
     def __init__(self, spec: Specification):
         self.__spec = spec
