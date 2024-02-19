@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rtofdata"
-version = "0.2.3"
+version = "0.2.4"
 description = "Data model for the Refugee Transitions Outcomes Fund (RTOF)"
 authors = ["James Hearn <james.hearn@socialfinance.org.uk>", "Kaj Siebert <kaj.siebert@socialfinance.org.uk>"]
 
